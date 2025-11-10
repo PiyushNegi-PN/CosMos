@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jupiter</title>
+<style>
+    html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: Arial, sans-serif;
+    }
+    canvas { display: block; }
+
+    #ui {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        color: white;
+        background: rgba(0,0,0,0.45);
+        padding: 15px 20px;
+        border-radius: 10px;
+        line-height: 1.6em;
+        width: 280px;
+        backdrop-filter: blur(6px);
+        z-index: 10;
+    }
+    #ui label, #ui input, #ui button {
+        font-size: 15px;
+        color: #fff;
+    }
+    #ui button {
+        background: #444;
+        border: 1px solid #888;
+        border-radius: 6px;
+        padding: 5px 10px;
+        margin-top: 6px;
+        cursor: pointer;
+    }
+    #ui button:hover { background: #666; }
+    #ui h2 { margin: 5px 0; font-size: 20px; color: #ffcc88; }
+    #ui small { color: #ccc; }
+</style>
+</head>
+<body>
+<div id="ui">
+    <h2>Jupiter Simulation</h2>
+    <p><b>Day Length:</b> 9.9 hours</p>
+    <p><b>Moons:</b> Io, Europa, Ganymede, Callisto</p>
+
+    <label><input type="checkbox" id="showOrbits" checked> Show Orbits</label><br>
+    <label><input type="checkbox" id="autoRotate" checked> Auto Rotate</label><br>
+    <label>Rotation Speed: <input type="range" id="speedSlider" min="0" max="5" value="1" step="0.1"></label><br>
+    <button id="resetCam">Reset View</button><br>
+    <small>Use mouse to rotate / scroll to zoom</small>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 6000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.body.appendChild(renderer.domElement);
+
+// lights
+const sunLight = new THREE.DirectionalLight(0xffe1b0, 2);
+sunLight.position.set(20, 5, 10);
+scene.add(sunLight);
+scene.add(new THREE.AmbientLight(0x3b2d1d, 0.5));
+
+// jupiter
+const jupiterGeo = new THREE.SphereGeometry(6, 256, 256);
+const jupiterMat = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 8 });
+
+const loader = new THREE.TextureLoader();
+loader.setCrossOrigin("anonymous");
+
+const jupiterTexURL = "https://upload.wikimedia.org/wikipedia/commons/5/5e/Solarsystemscope_texture_8k_jupiter.jpg";
+
+loader.load(
+  jupiterTexURL,
+  tex => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    jupiterMat.map = tex;
+    jupiterMat.needsUpdate = true;
+    console.log("Jupiter texture loaded");
+  },
+  undefined,
+  err => {
+    console.error("Failed to load Jupiter texture:", err);
+  }
+);
+
+const jupiter = new THREE.Mesh(jupiterGeo, jupiterMat);
+scene.add(jupiter);
+
+// glow
+const glow = new THREE.Mesh(
+  new THREE.SphereGeometry(6.3, 64, 64),
+  new THREE.MeshPhongMaterial({ color: 0xffaa55, transparent: true, opacity: 0.07 })
+);
+scene.add(glow);
+
+// make orbit function
+function createOrbit(radius) {
+  const pts = [];
+  for (let i = 0; i <= 360; i++) {
+    const rad = THREE.MathUtils.degToRad(i);
+    pts.push(new THREE.Vector3(Math.cos(rad)*radius, 0, Math.sin(rad)*radius));
+  }
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat = new THREE.LineBasicMaterial({ color: 0x555555 });
+  return new THREE.Line(geo, mat);
+}
+
+// moons
+const io = new THREE.Mesh(new THREE.SphereGeometry(0.35, 32, 32), new THREE.MeshPhongMaterial({ color: 0xd9b37f }));
+const europa = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 32), new THREE.MeshPhongMaterial({ color: 0xded7c8 }));
+const ganymede = new THREE.Mesh(new THREE.SphereGeometry(0.45, 32, 32), new THREE.MeshPhongMaterial({ color: 0x9c8b7a }));
+const callisto = new THREE.Mesh(new THREE.SphereGeometry(0.42, 32, 32), new THREE.MeshPhongMaterial({ color: 0x7a6b5b }));
+scene.add(io, europa, ganymede, callisto);
+
+const ioOrbit = createOrbit(10);
+const europaOrbit = createOrbit(14);
+const ganymedeOrbit = createOrbit(20);
+const callistoOrbit = createOrbit(28);
+scene.add(ioOrbit, europaOrbit, ganymedeOrbit, callistoOrbit);
+
+// stars
+const starsGeo = new THREE.BufferGeometry();
+const count = 8000;
+const pos = new Float32Array(count*3);
+for (let i=0;i<count*3;i++) pos[i]=(Math.random()-0.5)*4000;
+starsGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+scene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({color:0xffffff,size:1})));
+
+// camera + controls
+let camDist=25, rotX=0.3, rotY=0.5;
+function updateCam(){
+  camera.position.x=camDist*Math.sin(rotY)*Math.cos(rotX);
+  camera.position.y=camDist*Math.sin(rotX);
+  camera.position.z=camDist*Math.cos(rotY)*Math.cos(rotX);
+  camera.lookAt(0,0,0);
+}
+updateCam();
+
+let isDown=false, prev={x:0,y:0};
+renderer.domElement.addEventListener('mousedown',e=>{isDown=true;prev={x:e.clientX,y:e.clientY};});
+window.addEventListener('mouseup',()=>isDown=false);
+window.addEventListener('mousemove',e=>{
+  if(!isDown)return;
+  const dx=e.clientX-prev.x, dy=e.clientY-prev.y;
+  rotY+=dx*0.01; rotX+=dy*0.01;
+  rotX=Math.max(-Math.PI/2,Math.min(Math.PI/2,rotX));
+  prev={x:e.clientX,y:e.clientY};
+  updateCam();
+});
+window.addEventListener('wheel',e=>{
+  camDist+=e.deltaY*0.01;
+  camDist=Math.max(10,Math.min(80,camDist));
+  updateCam();
+});
+
+// UI
+const showOrbits=document.getElementById("showOrbits");
+const autoRotate=document.getElementById("autoRotate");
+const speedSlider=document.getElementById("speedSlider");
+document.getElementById("resetCam").addEventListener("click",()=>{camDist=25;rotX=0.3;rotY=0.5;updateCam();});
+
+// animation
+let ioA=0,euA=0,gaA=0,caA=0;
+function animate(){
+  requestAnimationFrame(animate);
+  const s=parseFloat(speedSlider.value);
+  ioOrbit.visible=europaOrbit.visible=ganymedeOrbit.visible=callistoOrbit.visible=showOrbits.checked;
+  if(autoRotate.checked) jupiter.rotation.y += 0.001*s;
+
+  ioA+=0.03*s; euA+=0.02*s; gaA+=0.012*s; caA+=0.008*s;
+  io.position.set(Math.cos(ioA)*10,0,Math.sin(ioA)*10);
+  europa.position.set(Math.cos(euA)*14,0,Math.sin(euA)*14);
+  ganymede.position.set(Math.cos(gaA)*20,0,Math.sin(gaA)*20);
+  callisto.position.set(Math.cos(caA)*28,0,Math.sin(caA)*28);
+
+  renderer.render(scene,camera);
+}
+animate();
+
+// resize
+window.addEventListener('resize',()=>{
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth,window.innerHeight);
+});
+</script>
+</body>
+</html>

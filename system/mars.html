@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mars 8K — Correct Moon Orbits</title>
+<style>
+    html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background-color: #000;
+        font-family: Arial, sans-serif;
+    }
+    canvas { display: block; }
+
+    /* ---- UI PANEL (BOTTOM-LEFT) ---- */
+    #ui {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        color: white;
+        z-index: 10;
+        background: rgba(0,0,0,0.45);
+        padding: 15px 20px;
+        border-radius: 10px;
+        line-height: 1.6em;
+        width: 280px;
+        backdrop-filter: blur(6px);
+    }
+    #ui label, #ui input, #ui button {
+        font-size: 15px;
+        color: #fff;
+    }
+    #ui button {
+        background: #444;
+        border: 1px solid #888;
+        border-radius: 6px;
+        padding: 5px 10px;
+        margin-top: 6px;
+        cursor: pointer;
+    }
+    #ui button:hover { background: #666; }
+    #ui h2 { margin: 5px 0; font-size: 20px; color: #ffcc88; }
+    #ui small { color: #ccc; }
+</style>
+</head>
+<body>
+<div id="ui">
+    <h2> Mars System</h2>
+    <p><b>Surface:</b> 8K (Solar System Scope)</p>
+    <p><b>Day Length:</b> 24.6 hours</p>
+    <p><b>Moons:</b> Phobos & Deimos</p>
+
+    <label><input type="checkbox" id="showOrbits" checked> Show Orbits</label><br>
+    <label><input type="checkbox" id="autoRotate" checked> Auto Rotate</label><br>
+    <label>Rotation Speed: <input type="range" id="speedSlider" min="0" max="5" value="1" step="0.1"></label><br>
+    <button id="resetCam">Reset View</button><br>
+    <small>Use mouse to rotate / scroll to zoom</small>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 3000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.body.appendChild(renderer.domElement);
+
+// lighting
+const sunLight = new THREE.DirectionalLight(0xffe1b0, 2);
+sunLight.position.set(10, 2, 10);
+scene.add(sunLight);
+scene.add(new THREE.AmbientLight(0x3b1d1d, 0.5));
+
+// mars surface
+const marsGeo = new THREE.SphereGeometry(5, 256, 256);
+const marsMat = new THREE.MeshPhongMaterial({ bumpScale: 0.35, shininess: 6 });
+const loader = new THREE.TextureLoader();
+loader.load("https://upload.wikimedia.org/wikipedia/commons/7/70/Solarsystemscope_texture_8k_mars.jpg", tex => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    marsMat.map = tex;
+    marsMat.bumpMap = tex;
+    marsMat.needsUpdate = true;
+});
+const mars = new THREE.Mesh(marsGeo, marsMat);
+scene.add(mars);
+
+// effect glow for mars
+const glow = new THREE.Mesh(
+    new THREE.SphereGeometry(5.2, 64, 64),
+    new THREE.MeshPhongMaterial({ color: 0xff8844, transparent: true, opacity: 0.07 })
+);
+scene.add(glow);
+
+// moons (phobos & deimos)
+const phobos = new THREE.Mesh(new THREE.SphereGeometry(0.25, 32, 32),
+new THREE.MeshPhongMaterial({ color: 0xb3a48f }));
+const deimos = new THREE.Mesh(new THREE.SphereGeometry(0.15, 32, 32),
+new THREE.MeshPhongMaterial({ color: 0xaaa099 }));
+scene.add(phobos, deimos);
+
+// orbit path
+function createOrbit(radius) {
+    const pts = [];
+    for (let i = 0; i <= 360; i++) {
+        const rad = THREE.MathUtils.degToRad(i);
+        pts.push(new THREE.Vector3(Math.cos(rad)*radius, 0, Math.sin(rad)*radius));
+    }
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = new THREE.LineBasicMaterial({ color: 0x555555 });
+    return new THREE.Line(geo, mat);
+}
+const phobosOrbit = createOrbit(9);
+const deimosOrbit = createOrbit(14);
+scene.add(phobosOrbit, deimosOrbit);
+
+// background stars
+const starsGeo = new THREE.BufferGeometry();
+const count = 8000;
+const pos = new Float32Array(count*3);
+for(let i=0;i<count*3;i++) pos[i]=(Math.random()-0.5)*2000;
+starsGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color:0xffffff,size:1})));
+
+// camera controls
+let camDist = 12, rotX = 0.3, rotY = 0.5;
+function updateCam() {
+    camera.position.x = camDist * Math.sin(rotY) * Math.cos(rotX);
+    camera.position.y = camDist * Math.sin(rotX);
+    camera.position.z = camDist * Math.cos(rotY) * Math.cos(rotX);
+    camera.lookAt(0,0,0);
+}
+updateCam();
+
+let isDown=false, prev={x:0,y:0};
+renderer.domElement.addEventListener('mousedown',e=>{isDown=true;prev={x:e.clientX,y:e.clientY};});
+window.addEventListener('mouseup',()=>isDown=false);
+window.addEventListener('mousemove',e=>{
+    if(!isDown)return;
+    const dx=e.clientX-prev.x, dy=e.clientY-prev.y;
+    rotY+=dx*0.01; rotX+=dy*0.01;
+    rotX=Math.max(-Math.PI/2,Math.min(Math.PI/2,rotX));
+    prev={x:e.clientX,y:e.clientY};
+    updateCam();
+});
+window.addEventListener('wheel',e=>{
+    camDist+=e.deltaY*0.01;
+    camDist=Math.max(6,Math.min(40,camDist));
+    updateCam();
+});
+
+// controls
+const showOrbits = document.getElementById("showOrbits");
+const autoRotate = document.getElementById("autoRotate");
+const speedSlider = document.getElementById("speedSlider");
+document.getElementById("resetCam").addEventListener("click", ()=>{
+    camDist = 12; rotX = 0.3; rotY = 0.5; updateCam();
+});
+
+// animation
+let phobosAngle=0, deimosAngle=0;
+function animate(){
+    requestAnimationFrame(animate);
+    const speed = parseFloat(speedSlider.value);
+
+    phobosOrbit.visible = deimosOrbit.visible = showOrbits.checked;
+    if(autoRotate.checked) mars.rotation.y += 0.001 * speed;
+
+    phobosAngle += 0.02 * speed;
+    deimosAngle += 0.008 * speed;
+
+    const phobosR = 9, deimosR = 14;
+    phobos.position.set(Math.cos(phobosAngle)*phobosR, 0, Math.sin(phobosAngle)*phobosR);
+    deimos.position.set(Math.cos(deimosAngle)*deimosR, 0, Math.sin(deimosAngle)*deimosR);
+
+    renderer.render(scene,camera);
+}
+animate();
+
+// resizeing
+window.addEventListener('resize',()=>{
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+});
+</script>
+</body>
+</html>

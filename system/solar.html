@@ -1,0 +1,28 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic 3D Solar System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.0/d3.min.js"></script>
+    <link rel="stylesheet" href="solar.css">
+</head>
+<body>
+    <div id="container">
+        <div id="loading">Loading Solar System...</div>
+        <div id="info">
+            <h3>Solar System Explorer</h3>
+        </div>
+        <div id="selectedPlanet"></div>
+        <div id="controls">
+            <button id="resetView">Reset View</button>
+            <button id="toggleOrbits">Hide Orbits</button>
+            <button id="toggleLabels">Show Labels</button>
+            <button id="toggleRotation">Pause Rotation</button>
+            <button id="toggleLighting">Realistic Lighting</button>
+        </div>
+    </div>
+    <script type="module" src="solar.js"></script>
+</body>
+</html>

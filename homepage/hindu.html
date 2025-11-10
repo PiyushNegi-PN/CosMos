@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hindu Astro - Cosmic Wisdom</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="hindu.css">
+  <style>
+    .image-link {
+      display: inline-block;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      border-radius: 12px;
+    }
+    
+    .image-link:hover {
+      transform: scale(1.02);
+    }
+    
+    .image-link:hover img {
+      opacity: 0.9;
+    }
+    
+    .image-link::after {
+      content: '🔍';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 8px;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .image-link:hover::after {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars-container">
+  <div class="stars" id="starfield"></div>
+</div>
+<div class="nebula"></div>
+
+<header>
+  <h1>🔱 Hindu Astro</h1>
+  <p>"Where Ancient Wisdom Meets the Cosmos"</p>
+</header>
+
+<section class="intro fade-in">
+  <img src="https://www.indiadivine.org/wp-content/uploads/2016/04/vishnu-01.jpg" alt="Lord Vishnu" class="hero-img" loading="lazy">
+  <div class="content">
+    <h2>The Eternal Cosmos</h2>
+    <div class="divider"></div>
+    <p>According to the <strong>Rigveda</strong> and the <strong>Puranas</strong>, the universe is cyclical — born, sustained, and dissolved through the infinite dance of creation and destruction, known as <em>Srishti</em> and <em>Pralaya</em>. Time is divided into four Yugas — Satya, Treta, Dvapara, and Kali — each marking a decline in righteousness and cosmic harmony.</p>
+
+    <div class="scripture-ref">
+      <span class="title">Bhagavad Gita 8.17</span>
+      <p class="verse">"One who knows the day of Brahma lasting a thousand Yugas and the night lasting a thousand Yugas understands the reality of time."</p>
+    </div>
+  </div>
+</section>
+
+<section class="yugas fade-in full-width">
+  <div class="content">
+    <h2>The Four Yugas - Cycles of Cosmic Time</h2>
+    <div class="divider"></div>
+    <p>The Hindu scriptures describe time as moving through repeating cycles of four Yugas, each with distinct characteristics and durations.</p>
+
+    <div class="yuga-timeline">
+      <div class="yuga-item satya">
+        <div class="yuga-icon">✨</div>
+        <div class="yuga-info">
+          <h4>Satya Yuga (Golden Age)</h4>
+          <div class="years">Duration: 1,728,000 years</div>
+          <p>The age of truth and perfection. Humans lived for 100,000 years with complete righteousness (Dharma). No disease, no envy, complete knowledge of the Vedas.</p>
+        </div>
+      </div>
+
+      <div class="yuga-item treta">
+        <div class="yuga-icon">🌟</div>
+        <div class="yuga-info">
+          <h4>Treta Yuga (Silver Age)</h4>
+          <div class="years">Duration: 1,296,000 years</div>
+          <p>Dharma declined by 25%. The age of Lord Rama. Humans lived for 10,000 years. Sacrifices and rituals became necessary for spiritual progress.</p>
+        </div>
+      </div>
+
+      <div class="yuga-item dvapara">
+        <div class="yuga-icon">⭐</div>
+        <div class="yuga-info">
+          <h4>Dvapara Yuga (Bronze Age)</h4>
+          <div class="years">Duration: 864,000 years</div>
+          <p>Dharma declined by 50%. The age of Lord Krishna and the Mahabharata. Humans lived for 1,000 years. Diseases appeared, knowledge became fragmented.</p>
+        </div>
+    </div>
+
+      <div class="yuga-item kali">
+        <div class="yuga-icon">🌑</div>
+        <div class="yuga-info">
+          <h4>Kali Yuga (Iron Age) - Current Era</h4>
+          <div class="years">Duration: 432,000 years (Started 3102 BCE)</div>
+          <p>Dharma declined by 75%. Age of conflict, materialism, and spiritual ignorance. Humans live barely 100 years. We are currently 5,000+ years into Kali Yuga.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scripture-ref">
+      <span class="title">Vishnu Purana 1.3</span>
+      <p class="verse">"The four Yugas together span 4,320,000 years and constitute one Maha Yuga (Great Age)."</p>
+    </div>
+  </div>
+</section>
+
+<section class="time-structure fade-in full-width">
+  <div class="content">
+    <h2>The Grand Structure of Cosmic Time</h2>
+    <div class="divider"></div>
+
+    <div class="time-cycles">
+      <div class="time-card">
+        <h3>🌅 Sandhi</h3>
+        <div class="duration">Twilight Periods</div>
+        <p>Transitional phases between Yugas. Each Yuga begins and ends with a Sandhi (dawn and dusk), accounting for 1/10th of the Yuga's duration.</p>
+      </div>
+
+      <div class="time-card">
+        <h3>🔄 Maha Yuga</h3>
+        <div class="duration">4,320,000 years</div>
+        <p>One complete cycle of all four Yugas (Satya + Treta + Dvapara + Kali). Also called Chatur Yuga or Divya Yuga.</p>
+      </div>
+
+      <div class="time-card">
+        <h3>👤 Manvantara</h3>
+        <div class="duration">71 Maha Yugas = 306,720,000 years</div>
+        <p>The reign of one Manu (progenitor of humanity). Each Kalpa contains 14 Manvantaras. We are currently in the 7th Manvantara of Vaivasvata Manu.</p>
+      </div>
+
+      <div class="time-card">
+        <h3>🌏 Kalpa (Day of Brahma)</h3>
+        <div class="duration">1,000 Maha Yugas = 4.32 billion years</div>
+        <p>One day in the life of Brahma the Creator. Equal to 14 Manvantaras plus 15 Sandhi periods. At the end of a Kalpa, partial dissolution (Naimittika Pralaya) occurs.</p>
+      </div>
+
+      <div class="time-card">
+        <h3>🌙 Brahma's Night</h3>
+        <div class="duration">4.32 billion years</div>
+        <p>Equal in length to Brahma's day. During this night, the universe rests in a dissolved state before being recreated at the next dawn.</p>
+      </div>
+
+      <div class="time-card">
+        <h3>🌞 Brahma's Year</h3>
+        <div class="duration">360 days + nights = 3.1104 trillion years</div>
+        <p>One year in Brahma's life consists of 360 of his days and nights, each lasting billions of human years.</p>
+      </div>
+
+      <div class="time-card">
+        <h3>♾️ Maha Kalpa (Life of Brahma)</h3>
+        <div class="duration">100 Brahma years = 311.04 trillion years</div>
+        <p>The complete lifespan of Brahma, after which total dissolution (Maha Pralaya) occurs. Then a new Brahma is born and creation begins anew.</p>
+      </div>
+
+      <div class="time-card">
+        <h3>🕉️ Param Kalpa</h3>
+        <div class="duration">Beyond calculation</div>
+        <p>The eternal cycle continues infinitely. After Maha Pralaya, the cosmos rests in the unmanifest state (Avyakta) until the next creation emerges from the Divine Will.</p>
+      </div>
+    </div>
+
+    <div class="scripture-ref">
+      <span class="title">Brahma Vaivarta Purana</span>
+      <p class="verse">"After 5,000 years of Kali Yuga have passed, a Golden Age will come for 10,000 years, where devotion to Krishna will flourish."</p>
+    </div>
+  </div>
+</section>
+
+<section class="cosmic-law fade-in">
+  <a href="/homepage/image/cosmic.jpg" target="_self" class="image-link">
+    <img src="/homepage/image/cosmic.jpg" alt="Hindu Universe" class="hero-img right" loading="lazy">
+  </a>
+  <div class="content">
+    <h2>Brahmanda - The Cosmic Egg</h2>
+    <div class="divider"></div>
+    <p>The ancient seers described the concept of <strong>Brahmanda</strong> — the Cosmic Egg — as the origin of all creation. Within this, countless universes exist, each governed by <strong>Karma</strong> and the eternal cycle of birth and rebirth.</p>
+
+    <h3>The Structure of the Universe</h3>
+    <p>According to the <em>Bhagavata Purana</em>, there are <strong>14 lokas (realms)</strong> arranged vertically:</p>
+
+    <div class="scripture-ref">
+      <span class="title">Upper Realms (Vyahritis)</span>
+      <p class="verse">
+        <strong>7 Higher Lokas:</strong> Satya (Brahma), Tapa, Jana, Mahar, Svar, Bhuvar, Bhur<br>
+        <strong>7 Lower Lokas:</strong> Atala, Vitala, Sutala, Talatala, Mahatala, Rasatala, Patala
+      </p>
+    </div>
+
+    <p>The <em>Bhagavata Purana</em> explains the structure of space and time long before modern science attempted to measure it. It describes multiple universes within universes, each with its own Brahma as creator.</p>
+  </div>
+</section>
+
+<section class="scripture-wisdom fade-in full-width">
+  <div class="content">
+    <h2>Sacred Scriptures on Cosmic Time</h2>
+    <div class="divider"></div>
+
+    <div class="scripture-ref">
+      <span class="title">Rig Veda 10.129 (Nasadiya Sukta)</span>
+      <p class="verse">"Then even nothingness was not, nor existence. There was no air then, nor the heavens beyond it. Who covered it? Where was it? In whose keeping? Then there was neither death nor immortality..."</p>
+    </div>
+
+    <div class="scripture-ref">
+      <span class="title">Manusmriti 1.68-80</span>
+      <p class="verse">"One day of Brahma equals 1,000 Maha Yugas. His night is of equal length. At the dawn of each day, creation manifests from the unmanifest. At nightfall, all beings dissolve."</p>
+    </div>
+
+    <div class="scripture-ref">
+      <span class="title">Surya Siddhanta (Ancient Astronomy Text)</span>
+      <p class="verse">"The diameter of Earth is 1,600 yojanas (approx 12,800 km - remarkably accurate). The Moon is 51,566 yojanas from Earth. The Sun illuminates half of Earth and creates day and night."</p>
+    </div>
+
+    <div class="scripture-ref">
+      <span class="title">Bhagavata Purana 3.11.19</span>
+      <p class="verse">"The duration of the material universe is limited. It is manifested in cycles of kalpas. After a period of duration, it is again dissolved."</p>
+    </div>
+
+    <div class="scripture-ref">
+      <span class="title">Shiva Purana</span>
+      <p class="verse">"Time devours all beings. Even Brahma, Vishnu, and all gods are subject to time. But Lord Shiva, the eternal consciousness, is beyond time (Mahakala)."</p>
+    </div>
+  </div>
+</section>
+
+<section class="modern-view fade-in">
+  <div class="content">
+    <h2>Modern Scientists on Hindu Cosmology</h2>
+    <div class="divider"></div>
+    <blockquote>
+      "The Hindu cosmology's time-scale for the Earth and the universe is in consonance with modern scientific cosmology. We know that the Earth is about 4.6 billion years old, and the universe is approximately 13.8 billion years old."
+      <strong>— Dr. Subhash Kak, Computer Scientist & Vedic Scholar</strong>
+    </blockquote>
+    <blockquote>
+      "It is not possible to read the Vedas, or the remarkable ideas of Indian cosmology, without feeling that these are much closer to modern physics than the early Greek or medieval European systems."  
+      <strong>— Arthur Eddington, British Astrophysicist</strong>
+    </blockquote>
+    <blockquote>
+      "The Hindu religion is the only one of the world's great faiths dedicated to the idea that the cosmos itself undergoes an immense, infinite number of deaths and rebirths. It's the only religion in which time scales correspond to those of modern scientific cosmology."  
+      <strong>— Carl Sagan, American Cosmologist</strong>
+    </blockquote>
+    <blockquote>
+      "The most remarkable feature of Hindu cosmology is its time scale. The Puranic view of the cosmos is very close to Big Bang cosmology in recognizing a cyclic universe."
+      <strong>— Dr. David Frawley, Vedic Scholar</strong>
+    </blockquote>
+  </div>
+  <img src="https://bigthink.com/wp-content/uploads/2017/01/Web-Sagan.jpg" alt="Carl Sagan" class="hero-img" loading="lazy">
+</section>
+
+<section class="current-age fade-in full-width">
+  <div class="content">
+    <h2>Where Are We Now in Cosmic Time?</h2>
+    <div class="divider"></div>
+    <div class="time-card">
+      <h3>📍 Our Current Position</h3>
+      <p><strong>Kalpa:</strong> Shveta Varaha Kalpa (White Boar Kalpa)<br>
+      <strong>Manvantara:</strong> 7th - Vaivasvata Manu<br>
+      <strong>Maha Yuga:</strong> 28th<br>
+      <strong>Yuga:</strong> Kali Yuga<br>
+      <strong>Year of Kali Yuga:</strong> 5,126 (as of 2024 CE)<br>
+      <strong>Years Remaining in Kali Yuga:</strong> 426,874 years</p>
+    </div>
+    <p style="margin-top: 2rem;">We are currently in the early stages of Kali Yuga, which began on February 18, 3102 BCE at midnight (the moment Lord Krishna left the Earth). According to the <em>Brahma Vaivarta Purana</em>, after 5,000 years of Kali Yuga, a 10,000-year Golden Age of spiritual awakening will dawn, even within this dark age.</p>
+    <div class="scripture-ref">
+      <span class="title">Linga Purana</span>
+      <p class="verse">"At the end of Kali Yuga, Lord Kalki will incarnate to destroy evil and restore Dharma, ushering in the next Satya Yuga."</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>🌠 "Yatha Pinde Tatha Brahmande" — As is the atom, so is the universe. 🌠</p>
+  <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+    "Kālo'smi lokakṣayakṛt pravṛddho" — I am Time, the destroyer of worlds (Bhagavad Gita 11.32)
+  </p>
+</footer>
+  <script src="scripts.js"></script>
+  <script type="module" src="hindu.js"></script>
+
+</body>
+</html>

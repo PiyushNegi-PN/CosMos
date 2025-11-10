@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Earth and Asteroids Simulation</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            display: block;
+            cursor: grab;
+        }
+        canvas:active {
+            cursor: grabbing;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            pointer-events: none;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            z-index: 100;
+        }
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 100;
+        }
+        #controls label {
+            display: block;
+            margin: 5px 0;
+        }
+        #controls input {
+            margin-right: 5px;
+        }
+        #instructions {
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 100;
+            max-width: 250px;
+        }
+        #instructions h3 {
+            margin-top: 0;
+        }
+        #instructions ul {
+            padding-left: 20px;
+        }
+        #instructions li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">Interactive Earth and Asteroids Simulation</div>
+    <div id="controls">
+        <label><input type="checkbox" id="toggleOrbits" checked> Show Asteroid Orbits</label>
+        <label><input type="checkbox" id="toggleAsteroids" checked> Show Asteroids</label>
+        <label><input type="checkbox" id="toggleRotation" checked> Auto-rotate Earth</label>
+        <label><input type="range" id="speedControl" min="0" max="200" value="100"> Simulation Speed</label>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        // Mouse interaction variables
+        let isMouseDown = false;
+        let mouseButton = 0; // 0: left, 1: middle, 2: right
+        let previousMousePosition = { x: 0, y: 0 };
+        let cameraTarget = new THREE.Vector3(0, 0, 0);
+        let cameraDistance = 15;
+        let cameraRotationX = 0;
+        let cameraRotationY = 0;
+        let isAutoRotating = true;
+
+        // Lighting
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        sunLight.position.set(5, 3, 5);
+        scene.add(sunLight);
+
+        const ambientLight = new THREE.AmbientLight(0x333333);
+        scene.add(ambientLight);
+
+        // Starfield background
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 10000;
+        const starPositions = new Float32Array(starCount * 3);
+        
+        for (let i = 0; i < starCount * 3; i++) {
+            starPositions[i] = (Math.random() - 0.5) * 2000;
+        }
+        
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        const starMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 1,
+            sizeAttenuation: true
+        });
+        const stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
+
+        // Earth sphere
+        const earthGeometry = new THREE.SphereGeometry(5, 64, 64);
+        
+        // Earth texture (using a placeholder - replace with NASA texture)
+        const earthTexture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+        const earthBumpMap = new THREE.TextureLoader().load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
+        const earthSpecularMap = new THREE.TextureLoader().load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
+        
+        const earthMaterial = new THREE.MeshPhongMaterial({
+            map: earthTexture,
+            bumpMap: earthBumpMap,
+            bumpScale: 0.05,
+            specularMap: earthSpecularMap,
+            specular: new THREE.Color(0x333333),
+            shininess: 5
+        });
+        
+        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        scene.add(earth);
+
+        // Cloud layer
+        const cloudGeometry = new THREE.SphereGeometry(5.1, 64, 64);
+        const cloudTexture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
+        
+        const cloudMaterial = new THREE.MeshPhongMaterial({
+            map: cloudTexture,
+            transparent: true,
+            opacity: 0.4
+        });
+        
+        const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
+        scene.add(clouds);
+
+        // Asteroid belt with visible orbits
+        const asteroids = [];
+        const asteroidOrbits = [];
+        const asteroidCount = 50; // Reduced for better performance with orbit lines
+        
+        // Create asteroid geometry and materials
+        const asteroidGeometries = [
+            new THREE.SphereGeometry(0.05, 6, 6),
+            new THREE.SphereGeometry(0.07, 5, 5),
+            new THREE.DodecahedronGeometry(0.06, 0),
+            new THREE.IcosahedronGeometry(0.08, 0)
+        ];
+        
+        const asteroidMaterials = [
+            new THREE.MeshPhongMaterial({ color: 0x8B7355 }),
+            new THREE.MeshPhongMaterial({ color: 0x696969 }),
+            new THREE.MeshPhongMaterial({ color: 0x5C4033 }),
+            new THREE.MeshPhongMaterial({ color: 0x4A4A4A })
+        ];
+
+        // Function to create an orbit line
+        function createOrbitLine(radius, inclination, eccentricity, color) {
+            const points = [];
+            const segments = 100;
+            
+            for (let i = 0; i <= segments; i++) {
+                const angle = (i / segments) * Math.PI * 2;
+                
+                // Calculate position with eccentricity
+                const r = radius * (1 + eccentricity * Math.cos(angle));
+                
+                // Calculate position with inclination
+                const x = r * Math.cos(angle);
+                const z = r * Math.sin(angle) * Math.cos(inclination);
+                const y = r * Math.sin(angle) * Math.sin(inclination);
+                
+                points.push(new THREE.Vector3(x, y, z));
+            }
+            
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ 
+                color: color,
+                transparent: true,
+                opacity: 0.3
+            });
+            
+            return new THREE.Line(geometry, material);
+        }
+
+        // Create asteroids with visible orbits
+        for (let i = 0; i < asteroidCount; i++) {
+            // Random orbital parameters
+            const orbitRadius = 7 + Math.random() * 3;
+            const orbitSpeed = 0.001 + Math.random() * 0.002;
+            const inclination = Math.random() * Math.PI;
+            const eccentricity = Math.random() * 0.3;
+            const angle = Math.random() * Math.PI * 2;
+            
+            // Create orbit line
+            const orbitColor = new THREE.Color().setHSL(Math.random(), 0.7, 0.5);
+            const orbitLine = createOrbitLine(orbitRadius, inclination, eccentricity, orbitColor);
+            asteroidOrbits.push(orbitLine);
+            scene.add(orbitLine);
+            
+            // Create asteroid
+            const geometry = asteroidGeometries[Math.floor(Math.random() * asteroidGeometries.length)];
+            const material = asteroidMaterials[Math.floor(Math.random() * asteroidMaterials.length)];
+            const asteroid = new THREE.Mesh(geometry, material);
+            
+            asteroid.userData = {
+                orbitRadius,
+                orbitSpeed,
+                inclination,
+                eccentricity,
+                angle,
+                time: Math.random() * 1000
+            };
+            
+            // Position asteroid in its orbit
+            updateAsteroidPosition(asteroid, 0);
+            
+            asteroids.push(asteroid);
+            scene.add(asteroid);
+        }
+
+        // Function to update asteroid position based on orbital parameters
+        function updateAsteroidPosition(asteroid, deltaTime) {
+            const data = asteroid.userData;
+            data.time += deltaTime;
+            data.angle += data.orbitSpeed;
+            
+            // Calculate position with eccentricity
+            const radius = data.orbitRadius * (1 + data.eccentricity * Math.cos(data.angle));
+            
+            // Calculate position with inclination
+            const x = radius * Math.cos(data.angle);
+            const z = radius * Math.sin(data.angle) * Math.cos(data.inclination);
+            const y = radius * Math.sin(data.angle) * Math.sin(data.inclination);
+            
+            asteroid.position.set(x, y, z);
+        }
+
+        // Update camera position based on current rotation and distance
+        function updateCamera() {
+            // Calculate camera position based on spherical coordinates
+            camera.position.x = cameraDistance * Math.sin(cameraRotationY) * Math.cos(cameraRotationX);
+            camera.position.y = cameraDistance * Math.sin(cameraRotationX);
+            camera.position.z = cameraDistance * Math.cos(cameraRotationY) * Math.cos(cameraRotationX);
+            
+            // Add camera target offset
+            camera.position.add(cameraTarget);
+            
+            // Make camera look at the target
+            camera.lookAt(cameraTarget);
+            
+            // Update camera up vector to maintain orientation
+            camera.up.set(0, 1, 0);
+        }
+
+        // Set initial camera position
+        updateCamera();
+
+        // Mouse event handlers
+        function onMouseDown(event) {
+            isMouseDown = true;
+            mouseButton = event.button;
+            previousMousePosition = { x: event.clientX, y: event.clientY };
+        }
+
+        function onMouseUp() {
+            isMouseDown = false;
+        }
+
+        function onMouseMove(event) {
+            if (!isMouseDown) return;
+            
+            const deltaX = event.clientX - previousMousePosition.x;
+            const deltaY = event.clientY - previousMousePosition.y;
+            
+            if (mouseButton === 0) { // Left button - rotate
+                cameraRotationY += deltaX * 0.01;
+                cameraRotationX += deltaY * 0.01;
+                
+                // Limit vertical rotation to avoid flipping
+                cameraRotationX = Math.max(-Math.PI/2, Math.min(Math.PI/2, cameraRotationX));
+                
+                updateCamera();
+            } else if (mouseButton === 2) { // Right button - pan
+                // Calculate pan direction based on camera orientation
+                const panX = -deltaX * 0.01;
+                const panY = deltaY * 0.01;
+                
+                // Create a vector for panning in camera's local space
+                const panVector = new THREE.Vector3(panX, panY, 0);
+                panVector.applyQuaternion(camera.quaternion);
+                
+                // Update camera target
+                cameraTarget.add(panVector);
+                updateCamera();
+            }
+            
+            previousMousePosition = { x: event.clientX, y: event.clientY };
+        }
+
+        function onWheel(event) {
+            // Adjust camera distance based on scroll direction
+            cameraDistance += event.deltaY * 0.01;
+            
+            // Limit zoom range
+            cameraDistance = Math.max(5, Math.min(50, cameraDistance));
+            
+            updateCamera();
+            event.preventDefault();
+        }
+
+        function onDoubleClick() {
+            // Reset camera to initial position
+            cameraTarget.set(0, 0, 0);
+            cameraDistance = 15;
+            cameraRotationX = 0;
+            cameraRotationY = 0;
+            updateCamera();
+        }
+
+        // Prevent context menu on right click
+        function onContextMenu(event) {
+            event.preventDefault();
+        }
+
+        // Add event listeners
+        renderer.domElement.addEventListener('mousedown', onMouseDown);
+        renderer.domElement.addEventListener('mouseup', onMouseUp);
+        renderer.domElement.addEventListener('mousemove', onMouseMove);
+        renderer.domElement.addEventListener('wheel', onWheel);
+        renderer.domElement.addEventListener('dblclick', onDoubleClick);
+        renderer.domElement.addEventListener('contextmenu', onContextMenu);
+
+        // Controls
+        const toggleOrbits = document.getElementById('toggleOrbits');
+        const toggleAsteroids = document.getElementById('toggleAsteroids');
+        const toggleRotation = document.getElementById('toggleRotation');
+        const speedControl = document.getElementById('speedControl');
+        
+        let simulationSpeed = 1;
+        
+        toggleOrbits.addEventListener('change', function() {
+            asteroidOrbits.forEach(orbit => {
+                orbit.visible = this.checked;
+            });
+        });
+        
+        toggleAsteroids.addEventListener('change', function() {
+            asteroids.forEach(asteroid => {
+                asteroid.visible = this.checked;
+            });
+        });
+        
+        toggleRotation.addEventListener('change', function() {
+            isAutoRotating = this.checked;
+        });
+        
+        speedControl.addEventListener('input', function() {
+            simulationSpeed = this.value / 100;
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Earth rotation
+            if (isAutoRotating) {
+                earth.rotation.y += 0.001 * simulationSpeed;
+                clouds.rotation.y += 0.0012 * simulationSpeed;
+            }
+            
+            // Update asteroid positions
+            asteroids.forEach(asteroid => {
+                updateAsteroidPosition(asteroid, simulationSpeed);
+            });
+            
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>

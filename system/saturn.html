@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saturn</title>
+<style>
+    html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: Arial, sans-serif;
+    }
+    canvas { display: block; }
+
+    #ui {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        color: white;
+        background: rgba(0,0,0,0.45);
+        padding: 15px 20px;
+        border-radius: 10px;
+        line-height: 1.6em;
+        width: 300px;
+        backdrop-filter: blur(6px);
+        z-index: 10;
+    }
+    #ui label, #ui input, #ui button {
+        font-size: 15px;
+        color: #fff;
+    }
+    #ui button {
+        background: #444;
+        border: 1px solid #888;
+        border-radius: 6px;
+        padding: 5px 10px;
+        margin-top: 6px;
+        cursor: pointer;
+    }
+    #ui button:hover { background: #666; }
+    #ui h2 { margin: 5px 0; font-size: 20px; color: #ffcc88; }
+    #ui small { color: #ccc; }
+</style>
+</head>
+<body>
+<div id="ui">
+    <h2>Saturn Simulation</h2>
+    <p><b>Day Length:</b> 10.7 hours</p>
+    <p><b>Moons:</b> 10 major moons (Titan, Rhea, Dione, Tethys, Enceladus, Mimas, Iapetus, Hyperion, Phoebe, Janus)</p>
+
+    <label><input type="checkbox" id="showOrbits" checked> Show Orbits</label><br>
+    <label><input type="checkbox" id="autoRotate" checked> Auto Rotate</label><br>
+    <label>Rotation Speed: <input type="range" id="speedSlider" min="0" max="5" value="1" step="0.1"></label><br>
+    <button id="resetCam">Reset View</button><br>
+    <small>Use mouse to rotate / scroll to zoom</small>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// scenece setup
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 10000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.body.appendChild(renderer.domElement);
+
+// lighting for the surface of the saturn
+const sunLight = new THREE.DirectionalLight(0xffe1b0, 2);
+sunLight.position.set(50, 10, 20);
+scene.add(sunLight);
+scene.add(new THREE.AmbientLight(0x3b2d1d, 0.5));
+
+// saturn 
+const saturnGeo = new THREE.SphereGeometry(6, 256, 256);
+const saturnMat = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 10 });
+const loader = new THREE.TextureLoader();
+loader.setCrossOrigin("anonymous");
+
+// 8K surface texture
+const saturnTexURL = "https://www.solarsystemscope.com/textures/download/8k_saturn.jpg";
+loader.load(
+  saturnTexURL,
+  tex => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    saturnMat.map = tex;
+    saturnMat.bumpMap = tex;
+    saturnMat.bumpScale = 0.2;
+    saturnMat.needsUpdate = true;
+    console.log("Saturn 8K texture loaded successfully");
+  },
+  undefined,
+  err => console.error("Failed to load Saturn texture:", err)
+);
+const saturn = new THREE.Mesh(saturnGeo, saturnMat);
+scene.add(saturn);
+
+// saturn rings
+const innerRadius = 7.2;
+const outerRadius = 12.5;
+const segments = 256;
+const ringGeo = new THREE.RingGeometry(innerRadius, outerRadius, segments);
+
+// Fix UV mapping
+const uv = ringGeo.attributes.uv;
+const pos = ringGeo.attributes.position;
+const v = new THREE.Vector3();
+for (let i = 0; i < uv.count; i++) {
+  v.fromBufferAttribute(pos, i);
+  const radius = Math.sqrt(v.x * v.x + v.y * v.y);
+  uv.setXY(i, (radius - innerRadius) / (outerRadius - innerRadius), 0);
+}
+
+// High-res transparent ring texture from Solar System Scope
+const ringTexURL = "https://www.solarsystemscope.com/textures/download/8k_saturn_ring_alpha.png";
+loader.load(
+  ringTexURL,
+  tex => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const ringMat = new THREE.MeshPhongMaterial({
+      map: tex,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 1.0,
+      depthWrite: false
+    });
+    const rings = new THREE.Mesh(ringGeo, ringMat);
+    rings.rotation.x = Math.PI / 2.1;
+    rings.rotation.z = Math.PI / 6; // tilt for realism
+    scene.add(rings);
+    console.log("Saturn ring texture loaded successfully");
+  },
+  undefined,
+  err => console.error("Failed to load Saturn ring texture:", err)
+);
+
+// moons of saturn
+function createMoon(radius, color) {
+  return new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 32, 32),
+    new THREE.MeshPhongMaterial({ color })
+  );
+}
+
+const moons = [
+  { name: "Mimas", r: 10, size: 0.15, color: 0xb8b0a8, speed: 0.03 },
+  { name: "Enceladus", r: 12, size: 0.18, color: 0xdcdcdc, speed: 0.028 },
+  { name: "Tethys", r: 14, size: 0.2, color: 0xcfc5b5, speed: 0.025 },
+  { name: "Dione", r: 16, size: 0.22, color: 0xc1b7a8, speed: 0.022 },
+  { name: "Rhea", r: 18, size: 0.25, color: 0xbbb0a0, speed: 0.02 },
+  { name: "Titan", r: 24, size: 0.4, color: 0xcba96b, speed: 0.015 },
+  { name: "Hyperion", r: 28, size: 0.22, color: 0xa69382, speed: 0.012 },
+  { name: "Iapetus", r: 34, size: 0.35, color: 0x8b7b6a, speed: 0.01 },
+  { name: "Phoebe", r: 40, size: 0.3, color: 0x7b6d5a, speed: 0.008 },
+  { name: "Janus", r: 9, size: 0.15, color: 0xb7a894, speed: 0.033 }
+];
+
+const moonMeshes = [];
+const orbitLines = [];
+
+for (let m of moons) {
+  const mesh = createMoon(m.size, m.color);
+  scene.add(mesh);
+  moonMeshes.push({ mesh, ...m });
+
+  // Orbit lines
+  const pts = [];
+  for (let i = 0; i <= 360; i++) {
+    const rad = THREE.MathUtils.degToRad(i);
+    pts.push(new THREE.Vector3(Math.cos(rad)*m.r, 0, Math.sin(rad)*m.r));
+  }
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat = new THREE.LineBasicMaterial({ color: 0x555555 });
+  const orbit = new THREE.Line(geo, mat);
+  scene.add(orbit);
+  orbitLines.push(orbit);
+}
+
+// backgroudn stars
+const starsGeo = new THREE.BufferGeometry();
+const count = 9000;
+const posStars = new Float32Array(count * 3);
+for (let i = 0; i < count * 3; i++) posStars[i] = (Math.random() - 0.5) * 6000;
+starsGeo.setAttribute("position", new THREE.BufferAttribute(posStars, 3));
+const starsMat = new THREE.PointsMaterial({ color: 0xffffff, size: 1 });
+scene.add(new THREE.Points(starsGeo, starsMat));
+
+// camera controls
+let camDist = 40, rotX = 0.3, rotY = 0.5;
+function updateCam() {
+  camera.position.x = camDist * Math.sin(rotY) * Math.cos(rotX);
+  camera.position.y = camDist * Math.sin(rotX);
+  camera.position.z = camDist * Math.cos(rotY) * Math.cos(rotX);
+  camera.lookAt(0, 0, 0);
+}
+updateCam();
+
+let isDown = false, prev = { x: 0, y: 0 };
+renderer.domElement.addEventListener("mousedown", e => { isDown = true; prev = { x: e.clientX, y: e.clientY }; });
+window.addEventListener("mouseup", () => isDown = false);
+window.addEventListener("mousemove", e => {
+  if (!isDown) return;
+  const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
+  rotY += dx * 0.01; rotX += dy * 0.01;
+  rotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, rotX));
+  prev = { x: e.clientX, y: e.clientY };
+  updateCam();
+});
+window.addEventListener("wheel", e => {
+  camDist += e.deltaY * 0.01;
+  camDist = Math.max(12, Math.min(100, camDist));
+  updateCam();
+});
+
+// camera/UI controls
+const showOrbits = document.getElementById("showOrbits");
+const autoRotate = document.getElementById("autoRotate");
+const speedSlider = document.getElementById("speedSlider");
+document.getElementById("resetCam").addEventListener("click", () => {
+  camDist = 40; rotX = 0.3; rotY = 0.5; updateCam();
+});
+
+// rotational animations
+const moonAngles = Array(moons.length).fill(0);
+function animate() {
+  requestAnimationFrame(animate);
+  const s = parseFloat(speedSlider.value);
+
+  orbitLines.forEach(o => o.visible = showOrbits.checked);
+
+  if (autoRotate.checked) saturn.rotation.y += 0.0015 * s;
+
+  moonMeshes.forEach((m, i) => {
+    moonAngles[i] += m.speed * s;
+    m.mesh.position.set(Math.cos(moonAngles[i]) * m.r, 0, Math.sin(moonAngles[i]) * m.r);
+  });
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// responsive rendering animations
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
