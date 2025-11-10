@@ -1,0 +1,47 @@
+# Node dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Build / output
+dist/
+build/
+.out/
+.cache/
+.next/
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# Coverage
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / editor
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Misc
+*.tgz
+*.gz
+~$*
+
