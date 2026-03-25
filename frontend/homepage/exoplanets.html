@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alien Worlds | The CosMos</title>
+  
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Core Scripts -->
+  <script src="../assets/js/seo.js" defer></script>
+  <script src="errorHandler.js" defer></script>
+  <script src="../assets/js/components.js" defer></script>
+  
+  <style>
+    .exo-hero {
+      background: radial-gradient(circle at center, rgba(236, 72, 153, 0.15) 0%, transparent 60%);
+      flex-direction: column;
+      text-align: center;
+      padding-top: 180px;
+      min-height: 50vh;
+    }
+    
+    .exoplanet-container {
+      max-width: 1200px;
+      margin: 0 auto 100px auto;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 5rem;
+    }
+    
+    .planet-card {
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 3rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    
+    .planet-card:nth-child(even) { flex-direction: row-reverse; }
+
+    .planet-info { flex: 1; }
+    .planet-info h2 { font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .planet-info .alias { color: var(--accent3); font-size: 1.2rem; font-weight: 600; margin-bottom: 1.5rem; letter-spacing: 1px; text-transform: uppercase;}
+    .planet-info p { color: rgba(255,255,255,0.7); font-size: 1.1rem; line-height: 1.7; }
+    
+    .planet-visual { flex: 1; display: flex; justify-content: center; align-items: center; height: 350px; position: relative; }
+    
+    /* CSS Art for 55 Cancri e (Diamond) */
+    .exo-diamond {
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff 0%, #a5f3fc 40%, #082f49 90%);
+      box-shadow: 0 0 50px rgba(165, 243, 252, 0.5), inset -20px -20px 40px rgba(0,0,0,0.8);
+      position: relative;
+      animation: float 6s ease-in-out infinite;
+    }
+    .exo-diamond::after {
+      content: ''; position: absolute; inset: -20px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(165,243,252,0.4) 0%, transparent 60%);
+      filter: blur(10px); z-index: -1;
+    }
+
+    /* CSS Art for Gliese 436 b (Burning Ice) */
+    .exo-ice {
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #93c5fd 0%, #1e3a8a 70%);
+      box-shadow: 0 0 40px rgba(239, 68, 68, 0.6), inset -20px -20px 40px rgba(0,0,0,0.8);
+      position: relative;
+      animation: float 7s ease-in-out infinite reverse;
+    }
+    .exo-ice::after {
+      content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+      border-radius: 50%;
+      border: 4px solid transparent; border-top-color: #ef4444; border-bottom-color: #f97316;
+      filter: blur(8px);
+      animation: spin 3s linear infinite; z-index: -1;
+    }
+
+    /* CSS Art for TrES-2b (The Darkest Planet) */
+    .exo-dark {
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #111 0%, #000 80%);
+      box-shadow: 0 0 30px rgba(220, 38, 38, 0.3), inset -30px -30px 40px rgba(0,0,0,1);
+      position: relative;
+      animation: float 8s ease-in-out infinite;
+    }
+    .exo-dark::before {
+      content: ''; position: absolute; top: 5%; left: 5%; width: 90%; height: 90%;
+      border-radius: 50%; border-left: 2px solid rgba(220, 38, 38, 0.8);
+      filter: blur(2px);
+      transform: rotate(-45deg);
+    }
+
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    @media (max-width: 900px) {
+      .planet-card, .planet-card:nth-child(even) { flex-direction: column; text-align: center; }
+      .planet-visual { height: 250px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation (Dynamic) -->
+  <div id="nav-placeholder"></div>
+
+  <header class="hero exo-hero animate-on-scroll">
+    <div class="hero-content">
+      <h1>Alien <br><span class="gradient-text" style="background: linear-gradient(135deg, #f472b6, #db2777); -webkit-background-clip: text; background-clip: text; color: transparent;">Worlds</span></h1>
+      <p class="hero-desc">The universe is stranger than fiction. Discover the absolute most bizarre, inhospitable, and magnificent exoplanets confirmed to exist outside our solar system.</p>
+    </div>
+  </header>
+
+  <section class="exoplanet-container">
+    
+    <!-- 55 Cancri e -->
+    <div class="planet-card animate-on-scroll">
+      <div class="planet-info">
+        <h2>55 Cancri e</h2>
+        <div class="alias">"The Diamond Planet"</div>
+        <p>Twice the size of Earth and 8 times as massive, this super-Earth is believed to be made largely of carbon. Due to unimaginable internal pressure and temperatures exceeding 2,400°C, a significant portion of the planet has likely crystallized into pure, solid diamond.</p>
+      </div>
+      <div class="planet-visual">
+        <div class="exo-diamond"></div>
+      </div>
+    </div>
+
+    <!-- Gliese 436 b -->
+    <div class="planet-card animate-on-scroll">
+      <div class="planet-info">
+        <h2>Gliese 436 b</h2>
+        <div class="alias">"The Burning Ice"</div>
+        <p>A Neptune-sized exoplanet shrouded in a paradox. It orbits so close to its star that its surface temperature is around 439°C (822°F). Yet, its immense gravity compresses its water so tightly that it forms a solid state known as "Ice-X". It is literally made of burning, solid ice.</p>
+      </div>
+      <div class="planet-visual">
+        <div class="exo-ice"></div>
+      </div>
+    </div>
+
+    <!-- TrES-2b -->
+    <div class="planet-card animate-on-scroll">
+      <div class="planet-info">
+        <h2>TrES-2b</h2>
+        <div class="alias">"The Pitch Black Planet"</div>
+        <p>The darkest known exoplanet in the universe. It reflects less than 1% of the light that hits it, making it significantly darker than coal or the blackest acrylic paint. The only light it emits is a faint, ominous deep red glow due to its blistering 1,000°C atmosphere.</p>
+      </div>
+      <div class="planet-visual">
+        <div class="exo-dark"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Mega Footer (Dynamic) -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    setTimeout(() => {
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+      });
+    }, 100);
+  </script>
+  <script src="nav.js"></script>
+</body>
+</html>

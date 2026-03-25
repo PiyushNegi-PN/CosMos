@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Future of Humanity | The CosMos</title>
+  
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Courier+Prime&display=swap" rel="stylesheet">
+  
+  <!-- Core Scripts -->
+  <script src="../assets/js/seo.js" defer></script>
+  <script src="errorHandler.js" defer></script>
+  <script src="../assets/js/components.js" defer></script>
+  
+  <style>
+    .future-hero {
+      background: radial-gradient(circle at center, rgba(14, 165, 233, 0.15) 0%, transparent 60%);
+      flex-direction: column;
+      text-align: center;
+      padding-top: 180px;
+      min-height: 50vh;
+    }
+    
+    .blueprints-container {
+      max-width: 1200px;
+      margin: 0 auto 100px auto;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6rem;
+    }
+    
+    .blueprint-card {
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+      background: rgba(8, 47, 73, 0.3);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      border-radius: 4px;
+      padding: 3rem;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 0 50px rgba(14, 165, 233, 0.1);
+      position: relative;
+    }
+    
+    /* Grid background to look like a blueprint */
+    .blueprint-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(14, 165, 233, 0.1) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(14, 165, 233, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      z-index: -1; pointer-events: none; border-radius: 4px;
+    }
+    
+    .blueprint-card:nth-child(even) { flex-direction: row-reverse; }
+
+    .concept-info { flex: 1; }
+    .concept-info h2 { font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 0.5rem; color: #bae6fd; letter-spacing: 1px; text-transform: uppercase; }
+    .concept-info .classification { color: #38bdf8; font-family: 'Courier Prime', monospace; font-size: 1rem; margin-bottom: 1.5rem; background: rgba(14, 165, 233, 0.2); padding: 4px 10px; display: inline-block; border-left: 3px solid #38bdf8; }
+    .concept-info p { color: rgba(255,255,255,0.7); font-size: 1.1rem; line-height: 1.7; }
+    
+    .blueprint-visual { flex: 1; display: flex; justify-content: center; align-items: center; height: 350px; position: relative; }
+    
+    /* CSS Blueprint: Mars Dome */
+    .bp-dome {
+      width: 250px; height: 125px;
+      border: 2px dashed #38bdf8;
+      border-top-left-radius: 250px; border-top-right-radius: 250px;
+      position: relative;
+      border-bottom: 2px solid #38bdf8;
+    }
+    .bp-dome::before {
+      content: ''; position: absolute; bottom: 0; left: 50%; width: 60%; height: 80%;
+      transform: translateX(-50%);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      border-top-left-radius: 100px; border-top-right-radius: 100px;
+    }
+    .bp-dome::after {
+      content: 'HABITAT 01'; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
+      font-family: 'Courier Prime', monospace; color: #38bdf8; font-size: 0.8rem;
+    }
+
+    /* CSS Blueprint: Generation Ship */
+    .bp-ship {
+      width: 300px; height: 60px;
+      border: 2px solid #38bdf8;
+      border-radius: 30px;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .bp-ship::before {
+      content: ''; position: absolute; width: 200px; height: 120px;
+      border: 1px dashed rgba(56, 189, 248, 0.5); border-radius: 50%;
+      animation: spin 10s linear infinite;
+    }
+    .bp-ship::after {
+      content: 'ROTATING GRAVITY RING'; position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%);
+      font-family: 'Courier Prime', monospace; color: #38bdf8; font-size: 0.8rem;
+    }
+
+    /* CSS Blueprint: Dyson Sphere */
+    .bp-dyson {
+      width: 200px; height: 200px;
+      position: relative;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .bp-dyson .star {
+      width: 50px; height: 50px; border-radius: 50%; background: #fbbf24; box-shadow: 0 0 30px #fbbf24;
+    }
+    .bp-dyson .panel-ring-1 {
+      position: absolute; width: 140px; height: 140px; border: 2px dashed #38bdf8; border-radius: 50%;
+      animation: spin 15s linear infinite;
+    }
+    .bp-dyson .panel-ring-2 {
+      position: absolute; width: 220px; height: 220px; border: 1px solid rgba(56, 189, 248, 0.5); border-radius: 50%;
+      transform: rotateX(60deg) rotateY(30deg);
+      animation: spin3D 8s linear infinite;
+    }
+    .bp-dyson::after {
+      content: 'MEGASTRUCTURE TYPE-II'; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
+      font-family: 'Courier Prime', monospace; color: #38bdf8; font-size: 0.8rem; white-space: nowrap;
+    }
+
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes spin3D { 100% { transform: rotateX(60deg) rotateY(30deg) rotateZ(360deg); } }
+
+    @media (max-width: 900px) {
+      .blueprint-card, .blueprint-card:nth-child(even) { flex-direction: column; text-align: center; }
+      .blueprint-visual { height: 250px; margin-top: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation (Dynamic) -->
+  <div id="nav-placeholder"></div>
+
+  <header class="hero future-hero animate-on-scroll">
+    <div class="hero-content">
+      <h1>Future of <br><span class="gradient-text" style="background: linear-gradient(135deg, #38bdf8, #0ea5e9); -webkit-background-clip: text; background-clip: text;">Humanity</span></h1>
+      <p class="hero-desc">The Earth is the cradle of humanity, but one cannot live in a cradle forever. Explore the theoretical engineering blueprints required for humanity to become a multi-planetary, and eventually interstellar, civilization.</p>
+    </div>
+  </header>
+
+  <section class="blueprints-container">
+    
+    <!-- Mars Colonization -->
+    <div class="blueprint-card animate-on-scroll">
+      <div class="concept-info">
+        <div class="classification">PROJECT: ARES-1 (PLANETARY)</div>
+        <h2>Martian Bio-Domes</h2>
+        <p>Before leaving the solar system, humanity must learn to survive off-world. Early Martian habitats will likely consist of pressurized bio-domes built partially underground or covered in regolith to shield colonists from brutal solar radiation and micro-meteorites. Inside, closed-loop hydroponic ecosystems will generate oxygen and food.</p>
+      </div>
+      <div class="blueprint-visual">
+        <div class="bp-dome"></div>
+      </div>
+    </div>
+
+    <!-- Generation Ships -->
+    <div class="blueprint-card animate-on-scroll">
+      <div class="concept-info">
+        <div class="classification">PROJECT: VOYAGER-PROXIMA (INTERSTELLAR)</div>
+        <h2>Generation Ships</h2>
+        <p>Current propulsion systems are too slow to reach other stars within a human lifetime. A theoretical solution is the Generation Ship—a massive, self-sustaining interstellar ark. It would utilize giant rotating rings to simulate Earth's 1G gravity via centrifugal force. The original crew would never see the destination; their distant descendants would be the ones to finally arrive at Alpha Centauri.</p>
+      </div>
+      <div class="blueprint-visual">
+        <div class="bp-ship"></div>
+      </div>
+    </div>
+
+    <!-- Dyson Sphere -->
+    <div class="blueprint-card animate-on-scroll">
+      <div class="concept-info">
+        <div class="classification">PROJECT: HELIOS-OMEGA (STELLAR)</div>
+        <h2>The Dyson Sphere</h2>
+        <p>A civilization's energy needs grow exponentially. A Kardashev Type-II civilization is defined by its ability to harness the total energy output of its host star. A Dyson Sphere or Dyson Swarm is a theoretical megastructure that completely encompasses a star like the Sun with millions of solar-harvesting satellites, providing near-infinite energy for galactic expansion.</p>
+      </div>
+      <div class="blueprint-visual">
+        <div class="bp-dyson">
+          <div class="star"></div>
+          <div class="panel-ring-1"></div>
+          <div class="panel-ring-2"></div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Mega Footer (Dynamic) -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    setTimeout(() => {
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+      });
+    }, 100);
+  </script>
+  <!-- nav.js removed as logic is in components.js -->
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Space Dashboard | The CosMos</title>
+  
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Core Scripts -->
+  <script src="../assets/js/seo.js" defer></script>
+  <script src="errorHandler.js" defer></script>
+  <script src="../assets/js/components.js" defer></script>
+  
+  <style>
+    .dash-hero {
+      background: radial-gradient(circle at center, rgba(16, 185, 129, 0.15) 0%, transparent 60%);
+      flex-direction: column;
+      text-align: center;
+      padding-top: 180px;
+      min-height: 50vh;
+    }
+    
+    .dashboard-container {
+      max-width: 1200px;
+      margin: -50px auto 100px auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .data-panel {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 2.5rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 1rem;
+    }
+    .panel-header i { font-size: 1.5rem; color: #34d399; }
+    .panel-header h2 { font-family: var(--font-heading); font-size: 1.8rem; margin: 0; }
+    
+    /* APOD Styling */
+    #apod-container { min-height: 400px; display: flex; flex-direction: column; gap: 1.5rem; }
+    #apod-image { width: 100%; border-radius: 12px; max-height: 500px; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
+    #apod-title { font-family: var(--font-heading); font-size: 1.5rem; color: #fff; }
+    #apod-desc { font-size: 1rem; color: rgba(255,255,255,0.7); line-height: 1.7; }
+    .loading { align-self: center; justify-self: center; display: flex; flex-direction: column; align-items: center; gap: 1rem; color: rgba(255,255,255,0.5); padding: 4rem 0; }
+    .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #34d399; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+    
+    /* ISS Telemetry */
+    .telemetry-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .t-card { background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(52, 211, 153, 0.2); }
+    .t-label { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .t-value { font-family: var(--font-heading); font-size: 1.8rem; color: #34d399; font-weight: 700; display: flex; align-items: baseline; gap: 0.5rem; }
+    .t-value span { font-size: 1rem; color: rgba(255,255,255,0.4); font-weight: 400; }
+    
+    /* Glow text */
+    .live-badge { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.5); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; animation: pulseRed 2s infinite; margin-left: auto; }
+    
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes pulseRed { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+    @media (max-width: 900px) {
+      .dashboard-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation (Dynamic) -->
+  <div id="nav-placeholder"></div>
+
+  <header class="hero dash-hero animate-on-scroll">
+    <div class="hero-content">
+      <h1>Cosmic <br><span class="gradient-text" style="background: linear-gradient(135deg, #34d399, #10b981); -webkit-background-clip: text; background-clip: text;">Telemetry</span></h1>
+      <p class="hero-desc">Real-time data feeds from the International Space Station and daily astronomical imagery from NASA's public APIs.</p>
+    </div>
+  </header>
+
+  <section class="dashboard-container">
+    
+    <!-- NASA APOD Panel -->
+    <div class="data-panel animate-on-scroll">
+      <div class="panel-header">
+        <i class="fa-solid fa-camera-retro"></i>
+        <h2>NASA Picture of the Day</h2>
+        <div class="live-badge" style="background: rgba(52,211,153,0.2); color: #34d399; border-color: rgba(52,211,153,0.5); animation: none;">LIVE API</div>
+      </div>
+      
+      <div id="apod-container">
+        <div id="apod-loading" class="loading">
+          <div class="spinner"></div>
+          <p>Connecting to NASA...</p>
+        </div>
+        <img id="apod-image" src="" alt="Astronomy Picture of the Day">
+        <h3 id="apod-title"></h3>
+        <p id="apod-desc"></p>
+      </div>
+    </div>
+
+    <!-- ISS Telemetry Panel -->
+    <div class="data-panel animate-on-scroll" style="animation-delay: 0.2s;">
+      <div class="panel-header">
+        <i class="fa-solid fa-satellite"></i>
+        <h2>ISS Tracker</h2>
+        <div class="live-badge">LIVE</div>
+      </div>
+      
+      <div class="telemetry-grid">
+        <div class="t-card">
+          <div class="t-label">Velocity</div>
+          <div class="t-value" id="iss-vel">-- <span>km/h</span></div>
+        </div>
+        <div class="t-card">
+          <div class="t-label">Altitude</div>
+          <div class="t-value" id="iss-alt">-- <span>km</span></div>
+        </div>
+        <div class="t-card">
+          <div class="t-label">Latitude</div>
+          <div class="t-value" id="iss-lat">-- <span>°</span></div>
+        </div>
+        <div class="t-card">
+          <div class="t-label">Longitude</div>
+          <div class="t-value" id="iss-lon">-- <span>°</span></div>
+        </div>
+      </div>
+      <p style="margin-top: 1.5rem; font-size: 0.9rem; color: rgba(255,255,255,0.4); text-align: center;">Data updates every 3 seconds via WhereTheISS.at API.</p>
+    </div>
+
+  </section>
+
+  <!-- Mega Footer (Dynamic) -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    // Intersection Observer
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    setTimeout(() => {
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+      });
+    }, 100);
+
+    // Fetch NASA APOD
+    async function fetchAPOD() {
+      try {
+        const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY');
+        const data = await response.json();
+        
+        document.getElementById('apod-loading').style.display = 'none';
+        
+        if (data.media_type === 'image') {
+          const img = document.getElementById('apod-image');
+          img.src = data.url;
+          img.style.display = 'block';
+        }
+        
+        document.getElementById('apod-title').textContent = data.title;
+        document.getElementById('apod-desc').textContent = data.explanation;
+        
+      } catch (err) {
+        document.getElementById('apod-loading').innerHTML = '<p style="color:#ef4444;">Failed to connect to NASA API. Target rate limit may be exceeded.</p>';
+      }
+    }
+
+    // Fetch ISS Telemetry
+    async function fetchISS() {
+      try {
+        const response = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
+        const data = await response.json();
+        
+        document.getElementById('iss-vel').innerHTML = `${Math.round(data.velocity).toLocaleString()} <span>km/h</span>`;
+        document.getElementById('iss-alt').innerHTML = `${Math.round(data.altitude).toLocaleString()} <span>km</span>`;
+        document.getElementById('iss-lat').innerHTML = `${data.latitude.toFixed(4)} <span>°</span>`;
+        document.getElementById('iss-lon').innerHTML = `${data.longitude.toFixed(4)} <span>°</span>`;
+      } catch (err) {
+        console.error("ISS Fetch Error", err);
+      }
+    }
+
+    // Init
+    fetchAPOD();
+    fetchISS();
+    setInterval(fetchISS, 3000); // Polling every 3 seconds
+  </script>
+  <!-- nav.js removed -->
+</body>
+</html>

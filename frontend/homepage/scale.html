@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scale of the Universe | The CosMos</title>
+  
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Core Scripts -->
+  <script src="../assets/js/seo.js" defer></script>
+  <script src="errorHandler.js" defer></script>
+  <script src="../assets/js/components.js" defer></script>
+  
+  <style>
+    .scale-hero {
+      background: radial-gradient(circle at center, rgba(125, 211, 252, 0.1) 0%, transparent 80%);
+      flex-direction: column;
+      text-align: center;
+      padding-top: 180px;
+      min-height: 70vh;
+    }
+    
+    .scale-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 50px 2rem 150px 2rem;
+    }
+
+    .scale-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      margin-bottom: 4rem;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s ease;
+    }
+
+    .scale-info { 
+      text-align: center; 
+      z-index: 2; 
+      padding: 3rem; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center;
+    }
+    
+    .scale-info h2 {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .scale-info .size {
+      color: var(--accent1);
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    .scale-info p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .scale-visual {
+      height: 400px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 30px;
+    }
+
+    @media (min-width: 850px) {
+      .scale-card {
+        flex-direction: row;
+        min-height: 450px;
+        align-items: stretch;
+      }
+      .scale-card:nth-child(even) {
+        flex-direction: row-reverse;
+      }
+      .scale-info {
+        flex: 1;
+        text-align: left;
+        padding: 4rem;
+      }
+      .scale-info p {
+        margin: 0;
+      }
+      .scale-visual {
+        flex: 1.2;
+        height: auto;
+      }
+    }
+
+    .vis-galaxy-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+    }
+
+    .vis-universe {
+      width: 100%; height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/stardust.png');
+      background-color: #000;
+      position: relative;
+    }
+    .vis-universe::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle, transparent 0%, rgba(0,0,0,0.8) 100%);
+    }
+    
+    .scale-card::after {
+      content: '↓';
+      position: absolute;
+      bottom: -30px; left: 50%; transform: translateX(-50%);
+      font-size: 2rem; color: rgba(255,255,255,0.2);
+    }
+    .scale-card:last-child::after { display: none; }
+
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation (Dynamic) -->
+  <div id="nav-placeholder"></div>
+
+  <header class="hero scale-hero animate-on-scroll">
+    <div class="hero-content">
+      <h1>Cosmic <br><span class="gradient-text">Scale</span></h1>
+      <p class="hero-desc">How small are we really? Scroll down to journey from the familiar size of our home planet all the way out to the boundaries of the observable universe.</p>
+    </div>
+  </header>
+
+  <section class="scale-container">
+    
+    <div class="scale-card animate-on-scroll">
+      <div class="scale-info">
+        <h2>1. The Earth</h2>
+        <div class="size">Diameter: 12,742 km</div>
+        <p>Our entire world. Every human being who has ever lived, every mountain, every ocean, all fits on this tiny blue marble suspended in a sunbeam.</p>
+      </div>
+      <div class="scale-visual">
+        <img src="image/Gemini_Generated_Image_r726n3r726n3r726.png" alt="The Earth" class="vis-galaxy-img">
+      </div>
+    </div>
+
+    <div class="scale-card animate-on-scroll">
+      <div class="scale-info">
+        <h2>2. The Sun</h2>
+        <div class="size">Diameter: 1.39 Million km</div>
+        <p>You could fit over 1 million Earths inside the Sun. Its immense gravity is what holds our entire solar system together.</p>
+      </div>
+      <div class="scale-visual">
+        <img src="image/same_as_this_202603250132.png" alt="The Sun" class="vis-galaxy-img">
+      </div>
+    </div>
+
+    <div class="scale-card animate-on-scroll">
+      <div class="scale-info">
+        <h2>3. The Solar System</h2>
+        <div class="size">Diameter: ~18 Billion km (to the heliopause)</div>
+        <p>The Sun is reduced to a mere speck at the center. It takes light from the Sun over 4 hours just to reach Neptune.</p>
+      </div>
+      <div class="scale-visual">
+        <img src="image/solar_system_in_202603250135.png" alt="The Solar System" class="vis-galaxy-img">
+      </div>
+    </div>
+
+    <div class="scale-card animate-on-scroll">
+      <div class="scale-info">
+        <h2>4. The Milky Way Galaxy</h2>
+        <div class="size">Diameter: 100,000 Light-Years</div>
+        <p>Our Solar System is just one among 100 to 400 billion other star systems swirling in this massive, barred spiral galaxy.</p>
+      </div>
+      <div class="scale-visual">
+        <img src="image/Gemini_Generated_Image_atfheiatfheiatfh.png" alt="Milky Way Galaxy" class="vis-galaxy-img">
+      </div>
+    </div>
+
+    <div class="scale-card animate-on-scroll">
+      <div class="scale-info">
+        <h2>5. The Observable Universe</h2>
+        <div class="size">Diameter: 93 Billion Light-Years</div>
+        <p>The ultimate limit of human perception. It contains roughly 2 trillion galaxies. The Milky Way itself is now invisibly microscopic.</p>
+      </div>
+      <div class="scale-visual">
+        <img src="image/The_Observable_Universe_202603250147.png" alt="The Observable Universe" class="vis-galaxy-img">
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Mega Footer (Dynamic) -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    
+    setTimeout(() => {
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+      });
+    }, 100);
+  </script>
+  <!-- nav.js removed -->
+</body>
+</html>

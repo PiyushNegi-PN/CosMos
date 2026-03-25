@@ -1,0 +1,54 @@
+# ─── Node ──────────────────────────────────────────────
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+package-lock.json
+
+# ─── Environment / Secrets ─────────────────────────────
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# ─── Logs ──────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ─── Build / Output ────────────────────────────────────
+dist/
+build/
+.out/
+.cache/
+.next/
+
+# ─── Firebase ──────────────────────────────────────────
+.firebase/
+firebase-debug.log
+firebase.json.bak
+*-service-account.json
+serviceAccountKey.json
+
+# ─── Coverage ──────────────────────────────────────────
+coverage/
+
+# ─── OS Files ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── IDE / Editor ──────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ─── Misc ──────────────────────────────────────────────
+*.tgz
+*.gz
+~$*
+.tmp/

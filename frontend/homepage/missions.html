@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Humanity's Journey | The CosMos</title>
+  
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Core Scripts -->
+  <script src="../assets/js/seo.js" defer></script>
+  <script src="errorHandler.js" defer></script>
+  <script src="../assets/js/components.js" defer></script>
+  
+  <style>
+    .missions-hero {
+      background: radial-gradient(circle at center top, rgba(125, 211, 252, 0.15) 0%, transparent 60%);
+      flex-direction: column;
+      text-align: center;
+      padding-top: 180px;
+      min-height: 60vh;
+    }
+    .missions-timeline-section {
+      padding: 60px 2rem 120px 2rem;
+    }
+    .mission-year {
+      color: var(--accent1);
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: 2px;
+    }
+    /* Enhance the existing timeline for the missions page */
+    .timeline { margin-top: 4rem; }
+    .timeline-content h3 { font-size: 2rem; margin-bottom: 1rem; color: #fff; }
+    .timeline-content p { font-size: 1.1rem; line-height: 1.7; color: rgba(255, 255, 255, 0.75); }
+    .timeline-icon i { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation (Dynamic) -->
+  <div id="nav-placeholder"></div>
+
+  <header class="hero missions-hero animate-on-scroll">
+    <div class="hero-content">
+      <h1>Humanity's <br><span class="gradient-text">Journey</span></h1>
+      <p class="hero-desc">We are explorers by nature. Trace the majestic timeline of human civilization reaching toward the stars, from our first lunar footsteps to peering at the dawn of the universe.</p>
+    </div>
+  </header>
+
+  <section class="missions-timeline-section panel">
+    <div class="timeline">
+      
+      <!-- Apollo 11 -->
+      <div class="timeline-item left animate-on-scroll item-with-image">
+        <div class="timeline-icon" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6);"><i class="fa-solid fa-moon"></i></div>
+        <div class="timeline-content">
+          <div class="mission-year">1969</div>
+          <h3>Apollo 11</h3>
+          <p>Commander Neil Armstrong and lunar module pilot Buzz Aldrin formed the American crew that landed the Apollo Lunar Module Eagle. For the first time in billions of years, a species stepped foot onto another celestial body.</p>
+        </div>
+        <div class="timeline-img">
+          <img src="image/wp4138435.jpg" alt="Apollo 11 Moon Landing">
+        </div>
+      </div>
+
+      <!-- Voyager Probes -->
+      <div class="timeline-item right animate-on-scroll item-with-image">
+        <div class="timeline-icon" style="background: linear-gradient(135deg, #b45309, #f59e0b);"><i class="fa-solid fa-satellite-dish"></i></div>
+        <div class="timeline-content">
+          <div class="mission-year">1977</div>
+          <h3>The Voyager Probes</h3>
+          <p>Voyager 1 and 2 were launched to take advantage of a favorable planetary alignment of the outer planets. They are now the farthest human-made objects in existence, currently drifting through interstellar space carrying the Golden Record—a message from humanity to the cosmos.</p>
+        </div>
+        <div class="timeline-img">
+          <img src="image/1_Voyager_artist_concept.jpg" alt="Voyager Artist Concept">
+        </div>
+      </div>
+
+      <!-- Hubble -->
+      <div class="timeline-item left animate-on-scroll item-with-image">
+        <div class="timeline-icon" style="background: linear-gradient(135deg, #4c1d95, #8b5cf6);"><i class="fa-solid fa-eye"></i></div>
+        <div class="timeline-content">
+          <div class="mission-year">1990</div>
+          <h3>Hubble Space Telescope</h3>
+          <p>Launched into low Earth orbit, Hubble remains one of the largest and most versatile telescopes ever built. Its breathtaking visible-light images revolutionized astronomy, allowing humanity to see deep into galaxies billions of light-years away.</p>
+        </div>
+        <div class="timeline-img">
+          <img src="image/hubble-space-telescope-hst-6.webp" alt="Hubble Space Telescope">
+        </div>
+      </div>
+
+      <!-- Cassini -->
+      <div class="timeline-item right animate-on-scroll item-with-image">
+        <div class="timeline-icon" style="background: linear-gradient(135deg, #14532d, #22c55e);"><i class="fa-solid fa-ring"></i></div>
+        <div class="timeline-content">
+          <div class="mission-year">1997 - 2017</div>
+          <h3>Cassini-Huygens</h3>
+          <p>A collaborative mission to study Saturn and its complex system of rings and moons. It completed a legendary 20-year mission before deliberately plunging into Saturn's atmosphere to protect the potentially habitable moons, Enceladus and Titan.</p>
+        </div>
+        <div class="timeline-img">
+          <img src="image/cassini_banner_final.jpg" alt="Cassini-Huygens Mission">
+        </div>
+      </div>
+
+      <!-- James Webb -->
+      <div class="timeline-item left animate-on-scroll item-with-image">
+        <div class="timeline-icon" style="background: linear-gradient(135deg, #9f1239, #f43f5e);"><i class="fa-solid fa-hexagon-nodes"></i></div>
+        <div class="timeline-content">
+          <div class="mission-year">2021</div>
+          <h3>James Webb Space Telescope</h3>
+          <p>The JWST is the most powerful telescope ever launched. Using infrared astronomy, its massive golden honey-comb mirrors can peer through thick dust clouds, looking back in time to capture light from the very first galaxies formed after the Big Bang.</p>
+        </div>
+        <div class="timeline-img">
+          <img src="image/right.jpg" alt="James Webb Space Telescope">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Mega Footer (Dynamic) -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    
+    setTimeout(() => {
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+      });
+    }, 100);
+  </script>
+  <script src="nav.js"></script>
+</body>
+</html>

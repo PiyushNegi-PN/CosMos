@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cosmic Quiz | The CosMos</title>
+  
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Core Scripts -->
+  <script src="../assets/js/seo.js" defer></script>
+  <script src="errorHandler.js" defer></script>
+  <script src="../assets/js/components.js" defer></script>
+  
+  <style>
+    .quiz-hero {
+      background: radial-gradient(circle at center, rgba(168, 85, 247, 0.15) 0%, transparent 60%);
+      flex-direction: column;
+      text-align: center;
+      padding-top: 180px;
+      min-height: 40vh;
+    }
+    
+    .quiz-container {
+      max-width: 800px;
+      margin: -20px auto 100px auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .quiz-panel {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 20px;
+      padding: 3rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      text-align: center;
+      min-height: 450px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-family: var(--font-heading);
+      color: #d8b4fe;
+    }
+
+    #question-text {
+      font-size: 1.8rem;
+      font-family: var(--font-heading);
+      color: #fff;
+      margin-bottom: 2rem;
+      line-height: 1.4;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .option-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: rgba(168, 85, 247, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+    }
+
+    .option-btn.correct { background: rgba(16, 185, 129, 0.2); border-color: #10b981; }
+    .option-btn.wrong { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; opacity: 0.5; }
+
+    #next-btn {
+      margin-top: 2rem;
+      padding: 1rem 3rem;
+      background: linear-gradient(135deg, #a855f7, #7e22ce);
+      border: none;
+      border-radius: 30px;
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      align-self: center;
+    }
+    #next-btn.visible { opacity: 1; visibility: visible; }
+    #next-btn:hover { box-shadow: 0 0 20px rgba(168, 85, 247, 0.5); transform: scale(1.05); }
+
+    .result-screen { display: none; flex-direction: column; align-items: center; gap: 1rem; }
+    .result-screen h2 { font-size: 3rem; color: #d8b4fe; font-family: var(--font-heading); margin-bottom: 1rem; }
+    .result-screen p { font-size: 1.2rem; color: rgba(255,255,255,0.7); }
+    
+    #restart-btn {
+      margin-top: 2rem; padding: 1rem 3rem; background: transparent; border: 2px solid #a855f7; border-radius: 30px; color: #fff; font-size: 1.1rem; cursor: pointer; transition: all 0.3s;
+    }
+    #restart-btn:hover { background: rgba(168, 85, 247, 0.2); }
+
+    @media (max-width: 600px) {
+      .options-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation (Dynamic) -->
+  <div id="nav-placeholder"></div>
+
+  <header class="hero quiz-hero animate-on-scroll">
+    <div class="hero-content">
+      <h1>Cosmic <br><span class="gradient-text" style="background: linear-gradient(135deg, #d8b4fe, #a855f7); -webkit-background-clip: text; background-clip: text;">Quiz</span></h1>
+      <p class="hero-desc">Test your knowledge of the universe. Answer correctly to warp deeper into uncharted space.</p>
+    </div>
+  </header>
+
+  <section class="quiz-container">
+    <div class="quiz-panel animate-on-scroll" id="quiz-panel">
+      
+      <!-- Live Quiz UI -->
+      <div id="quiz-ui">
+        <div class="quiz-header">
+          <span id="q-progress">Question 1 of 5</span>
+          <span id="q-score">Score: 0</span>
+        </div>
+        <h2 id="question-text">Loading question...</h2>
+        <div class="options-grid" id="options-container">
+          <!-- Buttons generated via JS -->
+        </div>
+        <button id="next-btn" onclick="nextQuestion()">Next Warp <i class="fa-solid fa-angles-right"></i></button>
+      </div>
+
+      <!-- Result Screen -->
+      <div id="result-ui" class="result-screen">
+        <h2>Journey Complete</h2>
+        <p id="final-score-text">You scored X out of Y.</p>
+        <p id="final-rank-text">Rank: Novice Explorer</p>
+        <button id="restart-btn" onclick="startQuiz()">Play Again</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Mega Footer (Dynamic) -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the boundary around a black hole beyond which light cannot escape called?",
+        options: ["The Accretion Disk", "The Event Horizon", "The Singularity", "The Photon Sphere"],
+        correct: 1
+      },
+      {
+        question: "Which of these planets is known to rain sideways glass in howling 5,400 mph winds?",
+        options: ["Jupiter", "Kepler-186f", "HD 189733b", "TrES-2b"],
+        correct: 2
+      },
+      {
+        question: "What is a theoretical megastructure that completely encompasses a star to capture its power?",
+        options: ["A Ringworld", "A Dyson Sphere", "An O'Neill Cylinder", "A Matrioshka Brain"],
+        correct: 1
+      },
+      {
+        question: "What is the closest star system to our Solar System?",
+        options: ["Alpha Centauri", "Sirius", "Betelgeuse", "TRAPPIST-1"],
+        correct: 0
+      },
+      {
+        question: "According to Vedic Astronomy, what Yuga (Age) are we currently living in?",
+        options: ["Satya Yuga", "Treta Yuga", "Dvapara Yuga", "Kali Yuga"],
+        correct: 3
+      }
+    ];
+
+    let currentQIndex = 0;
+    let score = 0;
+
+    const uiQuiz = document.getElementById("quiz-ui");
+    const uiResult = document.getElementById("result-ui");
+    const elQuestion = document.getElementById("question-text");
+    const elOptions = document.getElementById("options-container");
+    const elProgress = document.getElementById("q-progress");
+    const elScore = document.getElementById("q-score");
+    const btnNext = document.getElementById("next-btn");
+
+    function startQuiz() {
+      currentQIndex = 0;
+      score = 0;
+      uiResult.style.display = "none";
+      uiQuiz.style.display = "block";
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      btnNext.classList.remove("visible");
+      elOptions.innerHTML = "";
+      
+      const q = questions[currentQIndex];
+      elQuestion.textContent = q.question;
+      elProgress.textContent = `Question ${currentQIndex + 1} of ${questions.length}`;
+      elScore.textContent = `Score: ${score}`;
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(index, btn);
+        elOptions.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(selectedIndex, selectedBtn) {
+      const q = questions[currentQIndex];
+      const allBtns = elOptions.querySelectorAll(".option-btn");
+      
+      // Disable all buttons to prevent multiple clicks
+      allBtns.forEach(b => b.disabled = true);
+
+      if (selectedIndex === q.correct) {
+        selectedBtn.classList.add("correct");
+        score++;
+        elScore.textContent = `Score: ${score}`;
+      } else {
+        selectedBtn.classList.add("wrong");
+        // highlight correct one
+        allBtns[q.correct].classList.add("correct");
+      }
+
+      btnNext.classList.add("visible");
+    }
+
+    function nextQuestion() {
+      currentQIndex++;
+      if (currentQIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      uiQuiz.style.display = "none";
+      uiResult.style.display = "flex";
+      
+      document.getElementById("final-score-text").textContent = `You scored ${score} out of ${questions.length}.`;
+      
+      let rank = "Astrophysicist";
+      if (score < 5) rank = "Starship Captain";
+      if (score < 3) rank = "Cadet";
+      if (score === 0) rank = "Flat Earther";
+      
+      document.getElementById("final-rank-text").textContent = `Rank: ${rank}`;
+    }
+
+    // Init
+    startQuiz();
+
+    // Intersection Observer
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    setTimeout(() => { document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('visible')); }, 100);
+  </script>
+  <!-- nav.js removed as logic is in components.js -->
+</body>
+</html>

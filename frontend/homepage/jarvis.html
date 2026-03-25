@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ship Computer | The CosMos</title>
+  
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/marked@9/marked.min.js"></script>
+  
+  <!-- Core Scripts -->
+  <script src="../assets/js/seo.js" defer></script>
+  <script src="errorHandler.js" defer></script>
+  <script src="../assets/js/components.js" defer></script>
+  
+  <style>
+    body {
+      background: radial-gradient(circle at center 30%, #170d2b 0%, #000 70%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .jarvis-container {
+      flex: 1;
+      max-width: 900px;
+      margin: 120px auto 100px auto;
+      width: 100%;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* The AI Orb */
+    .orb-container {
+      position: relative;
+      width: 250px; height: 250px;
+      display: flex; justify-content: center; align-items: center;
+      margin-bottom: 2rem;
+    }
+    .ai-orb {
+      width: 100px; height: 100px;
+      background: radial-gradient(circle, #fbcfe8 0%, #ec4899 40%, #831843 80%);
+      border-radius: 50%;
+      box-shadow: 0 0 60px rgba(236, 72, 153, 0.6), inset 0 0 20px rgba(255,255,255,0.8);
+      animation: idlePulse 4s ease-in-out infinite;
+      z-index: 2;
+    }
+    .orb-ring {
+      position: absolute;
+      width: 180px; height: 180px;
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      border-radius: 50%;
+      animation: spin 8s linear infinite;
+    }
+    .orb-ring::before { content: ''; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; background: #ec4899; border-radius: 50%; box-shadow: 0 0 10px #ec4899; }
+    
+    .thinking .ai-orb {
+      animation: thinkPulse 0.5s ease-in-out infinite alternate;
+      background: radial-gradient(circle, #bae6fd 0%, #0ea5e9 40%, #082f49 80%);
+      box-shadow: 0 0 80px rgba(14, 165, 233, 0.8), inset 0 0 20px rgba(255,255,255,0.8);
+    }
+    .thinking .orb-ring {
+      border-color: rgba(14, 165, 233, 0.4);
+      animation: spin 2s linear infinite;
+    }
+    .thinking .orb-ring::before { background: #0ea5e9; box-shadow: 0 0 10px #0ea5e9; }
+
+    /* Chat Interface */
+    .chat-box {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(236, 72, 153, 0.2);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+    
+    .chat-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(236, 72, 153, 0.1);
+      text-align: center;
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      color: #fbcfe8;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .message {
+      max-width: 80%;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      line-height: 1.6;
+      animation: slideUp 0.3s ease-out;
+    }
+    
+    .message.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.1));
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      border-bottom-right-radius: 2px;
+      color: #fff;
+    }
+    
+    .message.ai {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom-left-radius: 2px;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .message.ai pre { background: rgba(0,0,0,0.5); padding: 1rem; border-radius: 8px; overflow-x: auto; margin-top: 0.5rem; }
+    .message.ai code { font-family: 'Courier Prime', monospace; color: #38bdf8; }
+    .message.ai p { margin-bottom: 0.5rem; }
+    .message.ai p:last-child { margin-bottom: 0; }
+
+    .chat-input-area {
+      padding: 1.5rem;
+      border-top: 1px solid rgba(236, 72, 153, 0.1);
+      display: flex;
+      gap: 1rem;
+      background: rgba(0,0,0,0.2);
+    }
+    
+    .chat-input-area input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      border-radius: 30px;
+      padding: 1rem 1.5rem;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+    .chat-input-area input:focus { border-color: #ec4899; box-shadow: 0 0 15px rgba(236, 72, 153, 0.2); background: rgba(255,255,255,0.1); }
+    
+    .chat-input-area button {
+      background: linear-gradient(135deg, #db2777, #be185d);
+      border: none;
+      border-radius: 50%;
+      width: 55px; height: 55px;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(219, 39, 119, 0.4);
+      transition: all 0.3s;
+    }
+    .chat-input-area button:hover { transform: scale(1.1); box-shadow: 0 0 30px rgba(219, 39, 119, 0.6); }
+
+    @keyframes idlePulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(236, 72, 153, 0.4); } 50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(236, 72, 153, 0.7); } }
+    @keyframes thinkPulse { 0% { transform: scale(0.95); } 100% { transform: scale(1.1); } }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Custom Scrollbar for chat */
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.3); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation (Dynamic) -->
+  <div id="nav-placeholder"></div>
+
+  <div class="jarvis-container">
+    
+    <div class="orb-container" id="ai-orb">
+      <div class="orb-ring"></div>
+      <div class="orb-ring" style="width:220px; height:220px; animation-direction: reverse; animation-duration: 12s; opacity: 0.5;"></div>
+      <div class="ai-orb"></div>
+    </div>
+
+    <div class="chat-box animate-on-scroll">
+      <div class="chat-header">Ship Computer Terminal</div>
+      
+      <div class="chat-messages" id="chatbox">
+        <div class="message ai">
+          <p>Greetings, Explorer. I am the CosMos Ship Computer. Our systems are fully operational.</p>
+          <p>You can ask me anything about the universe, star systems, astrophysics, or our current trajectory.</p>
+        </div>
+      </div>
+      
+      <div class="chat-input-area">
+        <input type="text" id="userInput" placeholder="Query the cosmos..." autocomplete="off" onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Mega Footer (Dynamic) -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const chatbox = document.getElementById("chatbox");
+    const orb = document.getElementById("ai-orb");
+
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') sendMessage();
+    }
+
+    async function sendMessage() {
+      const inputField = document.getElementById("userInput");
+      const message = inputField.value.trim();
+      
+      if (!message) return;
+
+      appendMessage("user", message);
+      inputField.value = "";
+      
+      // Change orb state to thinking
+      orb.classList.add("thinking");
+
+      try {
+        const response = await fetch("http://localhost:3001/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            message: message,
+            history: [] 
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Server error');
+        const reply = data.generated_text || "Error: Navigational computer offline.";
+        appendMessage("ai", reply);
+
+      } catch (error) {
+        console.error("Chat Error:", error);
+        appendMessage("ai", "Critical Error: Cannot connect to the mainframe at port 3001.");
+      } finally {
+        // Revert orb state
+        orb.classList.remove("thinking");
+      }
+    }
+
+    function appendMessage(sender, text) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `message ${sender}`;
+      
+      if (sender === "ai") {
+        msgDiv.innerHTML = marked.parse(text); // Parse markdown from Gemini
+      } else {
+        msgDiv.textContent = text;
+      }
+      
+      chatbox.appendChild(msgDiv);
+      chatbox.scrollTop = chatbox.scrollHeight; // Auto scroll down
+    }
+
+    // Intersection Observer
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    setTimeout(() => { document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('visible')); }, 100);
+  </script>
+  <!-- nav.js removed as logic is in components.js -->
+</body>
+</html>

@@ -1,0 +1,38 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic 3D Solar System | CosMos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.150.1/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.150.1/examples/jsm/"
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="solar.css">
+</head>
+<body>
+    <div id="container">
+        <div id="loading">Loading Solar System...</div>
+        <div id="info">
+            <h3>Solar System Explorer</h3>
+        </div>
+        <div id="selectedPlanet"></div>
+        <div id="controls">
+            <button id="resetView">Reset View</button>
+            <button id="toggleOrbits">Hide Orbits</button>
+            <button id="toggleLabels">Show Labels</button>
+            <button id="toggleRotation">Pause Rotation</button>
+            <button id="toggleLighting">Realistic Lighting</button>
+        </div>
+    </div>
+    <script type="module" src="solar.js"></script>
+</body>
+</html>

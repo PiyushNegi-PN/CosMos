@@ -1,0 +1,13 @@
+{
+  "name": "cosmos-dev",
+  "version": "1.0.0",
+  "description": "Unified startup scripts for frontend and backend",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npx serve ."
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

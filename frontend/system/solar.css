@@ -1,0 +1,190 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #030014;
+    font-family: 'Inter', 'Space Grotesk', sans-serif;
+    color: #fff;
+}
+
+#container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Glassmorphism panel for Info */
+#info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(15, 23, 42, 0.4);
+    padding: 20px 25px;
+    border-radius: 16px;
+    z-index: 100;
+    max-width: 320px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+#info h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #d8b4fe, #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#info p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+}
+
+/* Glass controls at bottom */
+#controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    z-index: 100;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 15px 25px;
+    border-radius: 50px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+button {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+    color: #fff;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+/* Planet labels hovering in space */
+.planet-label {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 4px 10px;
+    border-radius: 4px;
+    border-left: 2px solid #a855f7;
+    opacity: 1;
+    transition: opacity 0.3s, transform 0.1s;
+    backdrop-filter: blur(4px);
+    transform: translate(-50%, -150%);
+}
+
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #d8b4fe;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    z-index: 1000;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; text-shadow: 0 0 20px rgba(168, 85, 247, 0.6); }
+}
+
+/* Right-side Glass Panel for Selected Planet */
+#selectedPlanet {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 25px;
+    border-radius: 16px;
+    z-index: 100;
+    width: 280px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateX(20px);
+}
+
+#selectedPlanet.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+#selectedPlanet h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    border-bottom: 2px solid rgba(168, 85, 247, 0.4);
+    padding-bottom: 10px;
+}
+
+#selectedPlanet p {
+    margin: 10px 0;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 8px;
+}
+
+#selectedPlanet p strong {
+    color: #a855f7;
+    font-weight: 600;
+}
+
+/* Embedded Mode adjustments */
+body.embedded #info,
+body.embedded #controls,
+body.embedded #selectedPlanet {
+    display: none !important;
+}
+
+body.embedded #container {
+    background: transparent;
+}

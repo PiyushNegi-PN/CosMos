@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>The CosMos</title>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.150.1/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.150.1/examples/jsm/"
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Core Scripts -->
+  <script src="../assets/js/seo.js" defer></script>
+  <script src="errorHandler.js" defer></script>
+  <script src="../assets/js/components.js" defer></script>
+</head>
+<body>
+  <!-- Top Glassmorphism Navbar (Dynamic) -->
+  <div id="nav-placeholder"></div>
+
+  <!-- Immersive Split-Screen Hero -->
+  <header class="hero" id="home">
+    <div class="hero-content animate-on-scroll">
+      <h1>Explore The<br><span class="gradient-text">CosMos</span></h1>
+      <p class="hero-subtitle">Journey through the Universe.</p>
+      <p class="hero-desc">Interactive 3D visualization, real-time planetary data, and an AI-powered space assistant right from your browser.</p>
+      <div class="hero-actions">
+        <a href="#cosmic-intro" class="btn-primary">Begin Exploration</a>
+      </div>
+    </div>
+    <div class="hero-3d-visual animate-on-scroll">
+      <iframe id="heroSolarSystem" src="../system/solar.html?embed=true" style="width: 100%; height: 100%; border: none; border-radius: 20px; box-shadow: 0 0 50px rgba(125, 211, 252, 0.15); pointer-events: auto;"></iframe>
+      <a href="../system/solar.html" target="_blank" class="btn-hero-expand">
+        <i class="fa-solid fa-expand"></i> Launch Full Explorer
+      </a>
+    </div>
+  </header>
+  <section id="cosmic-intro" class="panel intro animate-on-scroll">
+  <div class="intro-content">
+    <div class="section-header">
+      <h2>The Beginning of Everything</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-icon"><i class="fa-solid fa-moon"></i></div>
+        <div class="timeline-content">
+          <h3>The Great Void</h3>
+          <p>Long before the first star shone, there was nothing — no time, no light, no space. Eventually, the stage was set for creation.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-icon"><i class="fa-solid fa-burst"></i></div>
+        <div class="timeline-content">
+          <h3>The Big Bang</h3>
+          <p>Around <strong>13.8 billion years ago</strong>, a moment of unimaginable energy burst into existence, marking the birth of space, time, and physical laws.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-icon"><i class="fa-solid fa-atom"></i></div>
+        <div class="timeline-content">
+          <h3>Matter Forms</h3>
+          <p>Within fractions of a second, matter and energy danced together in the extreme heat, forming the cosmic seeds of galaxies and worlds yet to come.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-icon"><i class="fa-solid fa-star"></i></div>
+        <div class="timeline-content">
+          <h3>First Stars</h3>
+          <p>Over billions of years, cosmic clouds of hydrogen collapsed under gravity’s pull, igniting the first stars. They lived, burned, and exploded—scattering heavier elements.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-icon"><i class="fa-solid fa-earth-americas"></i></div>
+        <div class="timeline-content">
+          <h3>Our Solar System</h3>
+          <p>Eventually, from this scattered stardust came our Sun, our planets, and humans — conscious beings, able to look back and wonder how it all began.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- Fullscreen iframe container removed; Solar System is now natively embedded -->
+
+  <section id="planet-slider" class="panel horizontal animate-on-scroll">
+    <div class="section-header">
+      <h2>Planetary Exploration</h2>
+      <p>Discover the worlds of our solar system</p>
+    </div>
+    <div class="slider" id="slider">
+      <div class="slide" data-planet="mercury">
+        <canvas class="mini-canvas" data-planet="mercury"></canvas>
+        <div class="slide-label">Mercury</div>
+      </div>
+      <div class="slide" data-planet="venus">
+        <canvas class="mini-canvas" data-planet="venus"></canvas>
+        <div class="slide-label">Venus</div>
+      </div>
+      <div class="slide" data-planet="earth">
+        <canvas class="mini-canvas" data-planet="earth"></canvas>
+        <div class="slide-label">Earth</div>
+      </div>
+      <div class="slide" data-planet="mars">
+        <canvas class="mini-canvas" data-planet="mars"></canvas>
+        <div class="slide-label">Mars</div>
+      </div>
+      <div class="slide" data-planet="jupiter">
+        <canvas class="mini-canvas" data-planet="jupiter"></canvas>
+        <div class="slide-label">Jupiter</div>
+      </div>
+      <div class="slide" data-planet="saturn">
+        <canvas class="mini-canvas" data-planet="saturn"></canvas>
+        <div class="slide-label">Saturn</div>
+      </div>
+      <div class="slide" data-planet="uranus">
+        <canvas class="mini-canvas" data-planet="uranus"></canvas>
+        <div class="slide-label">Uranus</div>
+    </div>
+    </div>
+  </section>
+
+  <!-- Deep Dive Hubs Gateways -->
+  <section id="explore-hubs" class="panel hubs-section animate-on-scroll">
+    <div class="section-header">
+      <h2>Beyond The Planets</h2>
+      <p>Dive much deeper into the mysteries of the cosmos.</p>
+    </div>
+    <div class="hubs-grid">
+      <a href="deepspace.html" class="hub-card">
+        <div class="hub-icon"><i class="fa-solid fa-meteor"></i></div>
+        <h3>Deep Space Phenomena</h3>
+        <p>Black holes, supernovas, and the extreme physics of the deep universe.</p>
+        <span class="hub-link">Explore <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+      
+      <a href="missions.html" class="hub-card">
+        <div class="hub-icon"><i class="fa-solid fa-rocket"></i></div>
+        <h3>Humanity's Journey</h3>
+        <p>From Apollo 11 to the Webb Telescope. A timeline of our greatest missions.</p>
+        <span class="hub-link">Explore <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+
+      <a href="hindu.html" class="hub-card">
+        <div class="hub-icon"><i class="fa-solid fa-dharmachakra"></i></div>
+        <h3>Vedic Astronomy</h3>
+        <p>Discover ancient Indian cosmic insights and the map of the Nakshatras.</p>
+        <span class="hub-link">Explore <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+
+      <a href="scale.html" class="hub-card">
+        <div class="hub-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+        <h3>Scale of the Universe</h3>
+        <p>Interactive size comparisons. How small are we in the grand scheme?</p>
+        <span class="hub-link">Explore <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- The Frontier Hubs Gateways -->
+  <section id="frontier-hubs" class="panel hubs-section animate-on-scroll">
+    <div class="section-header">
+      <h2>The Final Frontier</h2>
+      <p>Engage with live telemetry, alien worlds, and the future of human exploration.</p>
+    </div>
+    <div class="hubs-grid">
+      <a href="dashboard.html" class="hub-card">
+        <div class="hub-icon"><i class="fa-solid fa-satellite"></i></div>
+        <h3>Live Space Dashboard</h3>
+        <p>Real-time cosmic data, APOD feeds, and live telemetry from our solar system.</p>
+        <span class="hub-link">Engage <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+      
+      <a href="exoplanets.html" class="hub-card">
+        <div class="hub-icon"><i class="fa-solid fa-globe"></i></div>
+        <h3>Alien Exoplanets</h3>
+        <p>Tour the strangest, most extreme worlds discovered far beyond our sun.</p>
+        <span class="hub-link">Engage <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+
+      <a href="future.html" class="hub-card">
+        <div class="hub-icon"><i class="fa-solid fa-city"></i></div>
+        <h3>Future of Humanity</h3>
+        <p>Mars colonies, Dyson Spheres, and what awaits us in the coming millennia.</p>
+        <span class="hub-link">Engage <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+
+      <a href="jarvis.html" class="hub-card">
+        <div class="hub-icon" style="background: rgba(244, 114, 182, 0.2);"><i class="fa-solid fa-microchip" style="color: #f472b6;"></i></div>
+        <h3>Ship Computer (AI)</h3>
+        <p>Your dedicated, fully-interactive cosmic AI. Ask the computer anything.</p>
+        <span class="hub-link">Engage <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+
+      <a href="quiz.html" class="hub-card">
+        <div class="hub-icon"><i class="fa-solid fa-gamepad"></i></div>
+        <h3>Cosmic Quiz Game</h3>
+        <p>Test your knowledge of the universe to warp deeper into uncharted space.</p>
+        <span class="hub-link">Engage <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <aside id="info-panel" class="info-panel">
+    <button id="close-info" class="close-btn">✕</button>
+    <div id="info-content" class="info-content"></div>
+  </aside>
+
+  <!-- nav.js removed -->
+<script type="module" src="script.js"></script>
+</body>
+</html>

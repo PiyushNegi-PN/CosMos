@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Space Phenomena | The CosMos</title>
+  
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Core Scripts -->
+  <script src="../assets/js/seo.js" defer></script>
+  <script src="errorHandler.js" defer></script>
+  <script src="../assets/js/components.js" defer></script>
+  
+  <style>
+    /* Specific styles for Deep Space Page */
+    .deep-hero {
+      background: radial-gradient(circle at center, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+      flex-direction: column;
+      text-align: center;
+      padding-top: 180px;
+      min-height: 70vh;
+    }
+    .deep-hero .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .phenomenon-card {
+      display: flex;
+      align-items: center;
+      gap: 5rem;
+      padding: 100px 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .phenomenon-card:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+    .phenomenon-text { flex: 1; }
+    .phenomenon-text h2 {
+      font-family: var(--font-heading);
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
+    }
+    .bh-title { background: linear-gradient(135deg, #f97316, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nb-title { background: linear-gradient(135deg, #f472b6, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .ps-title { background: linear-gradient(135deg, #7dd3fc, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    
+    .phenomenon-text p {
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+    
+    .phenomenon-visual {
+      flex: 1;
+      height: 400px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    /* Pure CSS Black Hole */
+    .black-hole {
+      width: 220px; height: 220px;
+      background: #000;
+      border-radius: 50%;
+      box-shadow: 0 0 0 10px rgba(249, 115, 22, 0.1), 0 0 60px 30px rgba(249, 115, 22, 0.4), 0 0 150px 80px rgba(124, 58, 237, 0.3);
+      position: relative;
+      animation: pulseHole 4s infinite alternate;
+      z-index: 2;
+    }
+    .black-hole::after {
+      content: ''; position: absolute; top: -60px; left: -60px; right: -60px; bottom: -60px;
+      border-radius: 50%; border: 6px solid rgba(255,255,255,0.05);
+      border-top-color: rgba(251, 191, 36, 0.9);
+      border-bottom-color: rgba(249, 115, 22, 0.9);
+      animation: spin 1.5s linear infinite;
+      filter: blur(4px);
+      z-index: 1;
+    }
+    .black-hole::before {
+      content: ''; position: absolute; top: -100px; left: -10px; right: -10px; bottom: -100px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      transform: rotate(45deg);
+      filter: blur(20px);
+      animation: spin 8s linear infinite reverse;
+    }
+
+    /* Pure CSS Nebula */
+    .nebula {
+      width: 350px; height: 350px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(244, 114, 182, 0.8), transparent 60%),
+                  radial-gradient(circle at 70% 70%, rgba(124, 58, 237, 0.8), transparent 60%),
+                  radial-gradient(circle at 50% 50%, rgba(125, 211, 252, 0.6), transparent 50%);
+      filter: blur(25px);
+      animation: shiftNebula 10s infinite alternate ease-in-out;
+    }
+    
+    /* Pure CSS Pulsar */
+    .pulsar {
+      width: 80px; height: 80px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 40px 20px rgba(125, 211, 252, 0.8);
+      position: relative;
+      animation: rapidPulse 0.5s infinite alternate;
+    }
+    .pulsar-beam {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 600px; height: 10px;
+      background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.9), #fff, rgba(125, 211, 252, 0.9), transparent);
+      transform: translate(-50%, -50%) rotate(25deg);
+      filter: blur(4px);
+      animation: rotateBeam 2s linear infinite;
+    }
+
+    @keyframes pulseHole {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 10px rgba(249, 115, 22, 0.1), 0 0 50px 20px rgba(249, 115, 22, 0.3), 0 0 100px 50px rgba(124, 58, 237, 0.2); }
+      100% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(249, 115, 22, 0.2), 0 0 80px 40px rgba(249, 115, 22, 0.5), 0 0 180px 80px rgba(124, 58, 237, 0.4); }
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes rotateBeam { 100% { transform: translate(-50%, -50%) rotate(385deg); } }
+    @keyframes rapidPulse { 0% { transform: scale(0.9); filter: brightness(0.8); } 100% { transform: scale(1.1); filter: brightness(1.5); } }
+    @keyframes shiftNebula {
+      0% { transform: scale(1) rotate(0deg); border-radius: 40% 60% 70% 30%; }
+      100% { transform: scale(1.1) rotate(20deg); border-radius: 60% 40% 30% 70%; }
+    }
+
+    @media (max-width: 900px) {
+      .phenomenon-card { flex-direction: column !important; padding: 60px 2rem; gap: 3rem; text-align: center; }
+      .phenomenon-visual { height: 300px; }
+      .pulsar-beam { width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation (Dynamic) -->
+  <div id="nav-placeholder"></div>
+
+  <header class="hero deep-hero animate-on-scroll">
+    <div class="hero-content">
+      <h1>Deep Space <br><span class="gradient-text">Phenomena</span></h1>
+      <p class="hero-desc">Venture beyond the edge of our solar system. Discover the extreme physics, terrifying forces, and breathtaking beauty that govern the deep universe.</p>
+    </div>
+  </header>
+
+  <section class="phenomenon-card animate-on-scroll">
+    <div class="phenomenon-text">
+      <h2 class="bh-title">Black Holes</h2>
+      <p>A black hole is a region of spacetime where gravity is so strong that nothing—no particles or even electromagnetic radiation such as light—can escape from it.</p>
+      <p>The boundary of no escape is called the <strong>event horizon</strong>. Surrounding it is the accretion disk, a superheated ring of gas and dust spiraling inward at devastating speeds, emitting violent X-rays before crossing the threshold.</p>
+    </div>
+    <div class="phenomenon-visual">
+      <div class="black-hole"></div>
+    </div>
+  </section>
+
+  <section class="phenomenon-card animate-on-scroll">
+    <div class="phenomenon-text">
+      <h2 class="nb-title">Nebulas</h2>
+      <p>Nebulas are distinct luminescent clouds of interstellar dust, hydrogen, helium, and other ionized gases. They are often described as the "nurseries of the universe".</p>
+      <p>Within these massive, colorful clouds, clumped matter collapses under its own gravity. As the center grows denser and hotter, it eventually ignites nuclear fusion, giving birth to brand new stars.</p>
+    </div>
+    <div class="phenomenon-visual">
+      <div class="nebula"></div>
+    </div>
+  </section>
+
+  <section class="phenomenon-card animate-on-scroll">
+    <div class="phenomenon-text">
+      <h2 class="ps-title">Pulsars</h2>
+      <p>Pulsars are highly magnetized rotating neutron stars that emit beams of electromagnetic radiation out of their magnetic poles.</p>
+      <p>This radiation can be observed only when a beam of emission is pointing toward Earth. Because they rotate at incredible, precise speeds (sometimes hundreds of times a second), they appear to "pulse", acting as the cosmic lighthouses of the universe.</p>
+    </div>
+    <div class="phenomenon-visual">
+      <div class="pulsar">
+        <div class="pulsar-beam"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mega Footer (Dynamic) -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    // Intersection Observer for Animations
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    
+    // Trigger animations instantly for elements already in view
+    setTimeout(() => {
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+      });
+    }, 100);
+  </script>
+  <!-- nav.js removed as logic is in components.js -->
+</body>
+</html>
