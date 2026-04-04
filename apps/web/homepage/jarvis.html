@@ -223,6 +223,12 @@
       if (e.key === 'Enter') sendMessage();
     }
 
+    // CHANGE THIS URL to your actual Heroku API URL once deployed (e.g., "https://cosmos-api-m92k.herokuapp.com")
+    // Keep the logic exactly like this so you can still test locally on your computer!
+    const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" 
+      ? "http://localhost:3001" 
+      : "https://your-heroku-app-name.herokuapp.com";
+
     async function sendMessage() {
       const inputField = document.getElementById("userInput");
       const message = inputField.value.trim();
@@ -236,7 +242,7 @@
       orb.classList.add("thinking");
 
       try {
-        const response = await fetch("http://localhost:3001/api/chat", {
+        const response = await fetch(`${API_BASE_URL}/api/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
@@ -252,7 +258,7 @@
 
       } catch (error) {
         console.error("Chat Error:", error);
-        appendMessage("ai", "Critical Error: Cannot connect to the mainframe at port 3001.");
+        appendMessage("ai", `Critical Error: Cannot connect to the mainframe at ${API_BASE_URL}.`);
       } finally {
         // Revert orb state
         orb.classList.remove("thinking");
