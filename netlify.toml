@@ -1,0 +1,7 @@
+[build]
+  # Tell Netlify that the frontend website lives in the apps/web/ directory
+  base    = "apps/web"
+  
+  # The directory to publish is relative to the base directory. 
+  # Since it's raw HTML/CSS, the publish directory is the root of apps/web.
+  publish = "./"
