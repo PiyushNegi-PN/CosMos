@@ -16,121 +16,108 @@
 | 📡 **Live Dashboard** | `dashboard.html` | Real-time telemetry and mission status telemetry board |
 | 🌍 **Exoplanets Catalog** | `exoplanets.html` | A deep-dive catalog of distant worlds orbiting other stars |
 | 🔮 **Future of Humanity** | `future.html` | Visionary exploration of humanity's multi-planetary destiny |
-| 🤖 **Jarvis AI Control Room** | `jarvis.html` | AI-powered cosmic Q&A, backed by Gemini 2.0 Flash |
+| 🤖 **Jarvis AI Control Room** | `jarvis.html` | AI-powered cosmic Q&A, backed by Gemini Models |
 | 🧠 **Cosmic Quiz** | `quiz.html` | High-fidelity interactive quiz engine to test your knowledge |
 | 🔱 **Hindu Astro** | `hindu.html` | Vedic cosmology, Yugas, and ancient celestial wisdom |
 
 ---
 
-## 🛠️ Technology Stack
+## 🛠️ Technology Stack & Architecture
 
-### Frontend
-- **HTML5 & CSS3** — Glassmorphism, advanced gradients, micro-animations
-- **Vanilla JavaScript (ES Modules)** — Dynamic component injection, state management, interactive visualizations
-- **Three.js** — High-performance 3D rendering for the Solar System viewer
-- **Import Maps** — Dependency-free ES Module resolution (no bundler required)
-- **Font Awesome & Google Fonts** — Premium iconography and typography
+This project strictly follows a **SaaS Monorepo** architectural pattern using npm workspaces.
 
-### Shared Components (`frontend/assets/js/`)
-| File | Purpose |
-|---|---|
-| `components.js` | Dynamically injects shared navigation and footer HTML |
-| `seo.js` | Centralized SEO metadata management per page |
-| `star.js` | Animated starfield background renderer |
-| `firebaseauth.js` | Firebase-based user authentication |
-| `login.js` | Login flow handler |
+### Frontend (`apps/web/`)
+- **HTML5 & CSS3** — Glassmorphism, advanced gradients, micro-animations.
+- **Vanilla JavaScript (ES Modules)** — Dynamic component injection, state management, interactive visualizations.
+- **Three.js** — High-performance 3D rendering for the Solar System viewer.
+- **Netlify Ready** — Automatically deploys via out-of-the-box `netlify.toml` configuration.
 
-### Backend (`backend/`)
-- **Node.js + Express** — Lightweight API proxy server
-- **Google Generative AI SDK** — Integrates Gemini 2.0 Flash for the Jarvis AI Control Room
-- **dotenv** — Secure API key management via environment variables
-- **CORS** — Configured to allow frontend–backend communication
-- **nodemon** — Hot-reloading in development
+### Backend App (`apps/api/`)
+- **Layered Node.js + Express** — Robust API structure decoupled into routes, controllers, and constants.
+- **Google Generative AI SDK** — Integrates Gemini Flash for the Jarvis AI Control Room.
+- **Heroku Ready** — Powered by root-level `Procfile` for simple, scalable deployment.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started Locally
 
 ### Prerequisites
 - Node.js (v18+)
 - npm
 
-### 1. Install Root Dependencies
+### 1. Install Dependencies
+Because we use npm workspaces, you only need to run this once at the root directory to install packages for the entire monorepo!
 ```bash
 npm install
 ```
 
 ### 2. Configure the Backend
-
-Copy the example environment file and add your API key:
+Navigate to the API app and set up your private API keys:
 ```bash
-cd backend
+cd apps/api
 cp .env.example .env
 ```
-
-Open `backend/.env` and fill in your key:
+Open `apps/api/.env` and insert your Gemini API Key:
 ```
 GOOGLE_AI_API_KEY=your_google_ai_studio_key_here
 PORT=3001
 ```
-> Get a free API key at [aistudio.google.com](https://aistudio.google.com/app/apikey)
 
-### 3. Install Backend Dependencies
-```bash
-cd backend && npm install
-```
-
-### 4. Run the Development Environment
-
-From the **project root**, start both frontend and backend concurrently:
+### 3. Run the Development Environment
+From the **project root**, fire up both the frontend and backend servers simultaneously with one command:
 ```bash
 npm run dev
 ```
 
 | Service | URL |
 |---|---|
-| Frontend | `http://localhost:3000` (via `npx serve`) |
+| Frontend Client | `http://localhost:3000` |
 | Backend API | `http://localhost:3001` |
 | Health Check | `http://localhost:3001/api/health` |
 
 ---
 
+## 🌍 Deployment Options
+
+### Frontend (Netlify)
+The frontend UI is securely configured for Netlify!
+1. Connect this GitHub repository to Netlify.
+2. Netlify will read the `netlify.toml` file at the root automatically and serve the static files from `apps/web/`.
+
+### Backend (Heroku)
+The backend requires a persistent Node.js server. 
+1. Connect this repository to your Heroku app.
+2. Ensure you add `GOOGLE_AI_API_KEY` to your Heroku Config Vars.
+3. Deploy! Heroku will natively read the repository's `Procfile` and boot `apps/api`.
+4. *Don't forget to update the `API_BASE_URL` in `apps/web/homepage/jarvis.html` to point to your new Heroku URL!*
+
+---
+
 ## 📂 Project Structure
 
-```
+```text
 CosMos-main/
-├── package.json              # Root orchestrator (concurrently)
-├── frontend/
-│   ├── index.html            # Landing page
-│   ├── 404.html              # Custom error page
-│   ├── assets/
-│   │   ├── css/              # Shared stylesheets
-│   │   └── js/
-│   │       ├── components.js # Shared nav & footer injection
-│   │       ├── seo.js        # Centralized SEO management
-│   │       ├── star.js       # Starfield background
-│   │       ├── firebaseauth.js
-│   │       └── login.js
-│   ├── homepage/             # All exploration module pages
-│   │   ├── main.html
-│   │   ├── scale.html
-│   │   ├── deepspace.html
-│   │   ├── dashboard.html
-│   │   ├── exoplanets.html
-│   │   ├── future.html
-│   │   ├── jarvis.html
-│   │   ├── quiz.html
-│   │   ├── missions.html
-│   │   ├── hindu.html
-│   │   ├── main.css          # Primary stylesheet (~40KB)
-│   │   ├── script.js         # Core page logic
-│   │   ├── nav.js            # Navigation logic
-│   │   └── errorHandler.js   # Global error handling
-│   └── system/               # System-level configs & utilities
-└── backend/
-    ├── server.js             # Express server + Gemini proxy
-    ├── .env                  # 🔒 Your secrets (git-ignored)
-    └── .env.example          # Template for environment setup
+├── package.json              # Monorepo Orchestrator (Workspaces setup)
+├── netlify.toml              # UI Deployment blueprint
+├── Procfile                  # API Deployment blueprint
+├── packages/
+│   └── shared/               # Shared project configurations
+├── apps/
+│   ├── web/                  # FRONTEND CLIENT
+│   │   ├── index.html        # Landing page
+│   │   ├── assets/           # Global CSS & Components
+│   │   ├── homepage/         # Exploration Modules
+│   │   └── system/           # Solar system config 
+│   │
+│   └── api/                  # BACKEND SERVICE
+│       ├── .env              # 🔒 Local secrets 
+│       ├── package.json      # API specific dependencies
+│       └── src/
+│           ├── config/       # Third-party integrations
+│           ├── constants/    # Master AI Prompts & rules
+│           ├── controllers/  # Business logic & handling
+│           ├── routes/       # Express route mapping
+│           └── server.js     # API entrypoint
 ```
 
 ---
