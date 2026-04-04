@@ -1,0 +1,8 @@
+{
+  "name": "@cosmos/shared",
+  "version": "1.0.0",
+  "description": "Shared configurations and utilities for CosMos app",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
+}
